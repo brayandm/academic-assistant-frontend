@@ -1,12 +1,21 @@
 "use client";
 
-import React, { FormEvent } from "react";
+import React, { FormEvent, useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
+import { signIn } from "next-auth/react";
 
 const LoginForm: React.FC = () => {
-  const handleSubmit = (event: FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // Logic to handle form submission
+
+    const res = await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: false,
+    });
   };
 
   return (
@@ -21,11 +30,13 @@ const LoginForm: React.FC = () => {
       onSubmit={handleSubmit}
     >
       <TextField
-        id="username"
-        label="Username"
+        id="email"
+        label="Email"
         variant="outlined"
         margin="normal"
         required
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
       />
       <TextField
         id="password"
@@ -34,6 +45,8 @@ const LoginForm: React.FC = () => {
         type="password"
         margin="normal"
         required
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
       />
       <Button variant="contained" type="submit" sx={{ marginTop: "16px" }}>
         Sign In
