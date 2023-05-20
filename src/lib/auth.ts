@@ -43,16 +43,11 @@ export const authOptions: NextAuthOptions = {
     maxAge: 10800,
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      return "/";
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
     },
   },
+  pages: {
+    signIn: "/login",
+  },
 };
-
-export async function redirectLoginIfUnauthenticated() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect("/login");
-  }
-}
