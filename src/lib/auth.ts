@@ -37,4 +37,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  session: {
+    maxAge: 10800,
+  },
 };
