@@ -2,11 +2,13 @@
 
 import React, { FormEvent, useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -16,6 +18,8 @@ const LoginForm: React.FC = () => {
       password: password,
       redirect: false,
     });
+
+    if (res?.ok) router.push("/");
   };
 
   return (
