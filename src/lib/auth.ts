@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
         const res = await fetch(process.env.LOGIN_URL!, {
           method: "POST",
           body: JSON.stringify(credentials),
+          headers: { "Content-Type": "application/json" },
         });
         const user = await res.json();
 
