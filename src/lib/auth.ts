@@ -1,7 +1,5 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
 
 export const authOptions: NextAuthOptions = {
   providers: [
