@@ -21,14 +21,14 @@ const LoginForm: React.FC = () => {
       redirect: false,
     });
 
-    if (res?.ok) {
-      router.push("/");
-    }
-
-    if (res?.error) {
-      clearTimeout(timerId);
-      setError(true);
-      setTimerId(setTimeout(() => setError(false), 2000));
+    if (res) {
+      if (res?.error) {
+        clearTimeout(timerId);
+        setError(true);
+        setTimerId(setTimeout(() => setError(false), 2000));
+      } else {
+        router.push("/");
+      }
     }
   };
 
