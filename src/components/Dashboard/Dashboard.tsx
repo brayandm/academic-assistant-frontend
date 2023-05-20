@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { signOut } from "next-auth/react";
 import {
   AppBar,
   Toolbar,
@@ -29,7 +30,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Logic to handle logout
+    signOut();
   };
 
   return (

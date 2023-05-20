@@ -1,12 +1,35 @@
 "use client";
 
-import React, { FormEvent } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Alert } from "@mui/material";
+import React, { FormEvent, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const LoginForm: React.FC = () => {
-  const handleSubmit = (event: FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | undefined>(undefined);
+  const router = useRouter();
+
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // Logic to handle form submission
+
+    const res = await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: false,
+    });
+
+    if (res) {
+      if (res?.error) {
+        clearTimeout(timerId);
+        setError(true);
+        setTimerId(setTimeout(() => setError(false), 2000));
+      } else {
+        router.push("/");
+      }
+    }
   };
 
   return (
@@ -20,12 +43,23 @@ const LoginForm: React.FC = () => {
       }}
       onSubmit={handleSubmit}
     >
+      <Box
+        component="div"
+        sx={{
+          height: "50px",
+          margin: "10px 0",
+        }}
+      >
+        {error && <Alert severity="error">Bad credentials</Alert>}
+      </Box>
       <TextField
-        id="username"
-        label="Username"
+        id="email"
+        label="Email"
         variant="outlined"
         margin="normal"
         required
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
       />
       <TextField
         id="password"
@@ -34,6 +68,8 @@ const LoginForm: React.FC = () => {
         type="password"
         margin="normal"
         required
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
       />
       <Button variant="contained" type="submit" sx={{ marginTop: "16px" }}>
         Sign In
