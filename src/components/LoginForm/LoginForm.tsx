@@ -1,13 +1,15 @@
 "use client";
 
+import { Box, TextField, Button, Alert } from "@mui/material";
 import React, { FormEvent, useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | undefined>(undefined);
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent) => {
@@ -22,6 +24,12 @@ const LoginForm: React.FC = () => {
     if (res?.ok) {
       router.push("/");
     }
+
+    if (res?.error) {
+      clearTimeout(timerId);
+      setError(true);
+      setTimerId(setTimeout(() => setError(false), 2000));
+    }
   };
 
   return (
@@ -35,6 +43,15 @@ const LoginForm: React.FC = () => {
       }}
       onSubmit={handleSubmit}
     >
+      <Box
+        component="div"
+        sx={{
+          height: "50px",
+          margin: "10px 0",
+        }}
+      >
+        {error && <Alert severity="error">Bad credentials</Alert>}
+      </Box>
       <TextField
         id="email"
         label="Email"

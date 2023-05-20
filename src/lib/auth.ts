@@ -28,6 +28,10 @@ export const authOptions: NextAuthOptions = {
         });
         const user = await res.json();
 
+        if (user["errors"]) {
+          return null;
+        }
+
         // If no error and we have user data, return it
         if (res.ok && user) {
           return user;
