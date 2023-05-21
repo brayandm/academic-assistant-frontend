@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { Session } from "next-auth";
+import axios from "axios";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,20 +23,28 @@ export const authOptions: NextAuthOptions = {
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const res = await fetch(process.env.LOGIN_URL!, {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        });
-        const user = await res.json();
+        try {
+          const res = await axios.post(
+            process.env.LOGIN_URL!,
+            JSON.stringify(credentials),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const user = res.data;
 
-        if (user["errors"]) {
-          return null;
-        }
+          if (user["errors"]) {
+            return null;
+          }
 
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user;
+          // If no error and we have user data, return it
+          if (res.status == 200 && user) {
+            return user;
+          }
+        } catch (error) {
+          console.error(error);
         }
         // Return null if user data could not be retrieved
         return null;
@@ -57,10 +66,13 @@ export const authOptions: NextAuthOptions = {
     async signOut(message) {
       // @ts-ignore
       const access_token = message.token.user.access_token;
-      await fetch(process.env.LOGOUT_URL!, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${access_token}` },
-      });
+      try {
+        await axios.post(process.env.LOGOUT_URL!, null, {
+          headers: { Authorization: `Bearer ${access_token}` },
+        });
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
   session: {
