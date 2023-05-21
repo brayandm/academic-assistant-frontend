@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getServerSession } from "next-auth";
+import { Session } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -71,9 +71,7 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export async function isTokenExpired() {
-  const session = await getServerSession(authOptions);
-
+export async function isTokenExpired(session: Session) {
   // @ts-ignore
   const tokenExpiricyDate = session?.user?.expires_in;
 
