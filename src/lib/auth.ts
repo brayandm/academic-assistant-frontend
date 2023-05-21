@@ -41,6 +41,17 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      user && (token.user = user);
+      return token;
+    },
+    async session({ session, token }) {
+      // @ts-ignore
+      session.user = token.user;
+      return session;
+    },
+  },
   session: {
     maxAge: 10800,
   },
