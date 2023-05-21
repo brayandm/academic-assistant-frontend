@@ -1,14 +1,10 @@
 import { Session } from "next-auth";
 
-export function getOptions(session: Session) {
+export function getHeaders(session: Session, headers?: any) {
   return {
-    context: {
-      headers: {
-        Accept: "application/json",
-        // @ts-ignore
-        Authorization: `Bearer ${session?.user?.access_token}`,
-        "Access-Control-Allow-Origin": "*",
-      },
-    },
+    ...headers,
+    // @ts-ignore
+    Authorization: `Bearer ${session?.user?.access_token}`,
+    Accept: "application/json",
   };
 }
