@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "codegen": "graphql-codegen --config codegenApolloClient.ts"
+    "codegen": "graphql-codegen --config codegenApolloClient.ts && graphql-codegen --config codegenGraphqlRequest.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
@@ -25,6 +25,7 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "graphql": "^16.6.0",
+    "graphql-request": "^6.0.0",
     "next": "13.4.2",
     "next-auth": "^4.22.1",
     "postcss": "8.4.23",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^3.3.1",
     "@graphql-codegen/client-preset": "^3.0.1",
+    "@graphql-codegen/typescript-graphql-request": "^5.0.0",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
     "husky": "^8.0.3",
     "prettier": "2.8.8"
