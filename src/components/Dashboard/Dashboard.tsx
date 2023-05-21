@@ -13,11 +13,12 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { useGetMeQuery } from "@/graphql/client";
-import { getOptions } from "@/utils/graphql";
-import { useSession } from "next-auth/react";
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  username: string;
+}
+
+function Dashboard({ username }: DashboardProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,11 +36,6 @@ const Dashboard: React.FC = () => {
   const handleLogout = () => {
     signOut();
   };
-
-  const { data: session } = useSession();
-  const { data } = useGetMeQuery(getOptions(session!));
-
-  const username = data?.me?.name;
 
   return (
     <div>
@@ -99,6 +95,6 @@ const Dashboard: React.FC = () => {
       </Container>
     </div>
   );
-};
+}
 
 export default Dashboard;
