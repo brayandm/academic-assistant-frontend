@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProvider";
 import { isTokenExpired } from "@/lib/auth";
 import Logout from "@/components/Logout/Logout";
+import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,12 +23,17 @@ export default async function RootLayout({
 
   return (
     <NextAuthProvider>
-      <html lang="en">
-        <head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </head>
-        <body className={inter.className}>{children}</body>
-      </html>
+      <ApolloClientProvider uri={process.env.GRAPHQL_URL!}>
+        <html lang="en">
+          <head>
+            <meta
+              name="viewport"
+              content="initial-scale=1, width=device-width"
+            />
+          </head>
+          <body className={inter.className}>{children}</body>
+        </html>
+      </ApolloClientProvider>
     </NextAuthProvider>
   );
 }
