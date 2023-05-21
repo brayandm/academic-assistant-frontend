@@ -14,6 +14,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useGetMeQuery } from "@/graphql/graphql";
+import { getOptions } from "@/utils/graphql";
 import { useSession } from "next-auth/react";
 
 const Dashboard: React.FC = () => {
@@ -36,16 +37,7 @@ const Dashboard: React.FC = () => {
   };
 
   const { data: session } = useSession();
-
-  const { data } = useGetMeQuery({
-    context: {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${session?.user?.access_token}`,
-        "Access-Control-Allow-Origin": "*",
-      },
-    },
-  });
+  const { data } = useGetMeQuery(getOptions(session!));
 
   const username = data?.me?.name;
 
