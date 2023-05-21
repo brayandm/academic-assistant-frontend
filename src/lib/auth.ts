@@ -50,8 +50,6 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // @ts-ignore
       session.user = token.user;
-      // @ts-ignore
-      session.expires = token.user.expires_in as string;
       return session;
     },
   },
