@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: {
-    maxAge: 31536000,
+    maxAge: parseInt(process.env.MAX_AGE_SESSION!),
   },
   pages: {
     signIn: "/login",
