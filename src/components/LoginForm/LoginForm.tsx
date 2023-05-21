@@ -27,7 +27,7 @@ const LoginForm: React.FC = () => {
         setError(true);
         setTimerId(setTimeout(() => setError(false), 2000));
       } else {
-        router.push("/");
+        router.push("/dashboard");
       }
     }
   };
