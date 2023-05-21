@@ -13,7 +13,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { useGetMeQuery } from "@/graphql/graphql";
+import { useGetMeQuery } from "@/graphql/client";
 import { getOptions } from "@/utils/graphql";
 import { useSession } from "next-auth/react";
 
