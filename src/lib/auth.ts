@@ -53,6 +53,16 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  events: {
+    async signOut(message) {
+      // @ts-ignore
+      const access_token = message.token.user.access_token;
+      await fetch(process.env.LOGOUT_URL!, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+    },
+  },
   session: {
     maxAge: parseInt(process.env.MAX_AGE_SESSION!),
   },
