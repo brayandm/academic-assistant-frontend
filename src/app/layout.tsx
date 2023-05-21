@@ -4,6 +4,8 @@ import { NextAuthProvider } from "@/providers/NextAuthProvider";
 import { isTokenExpired } from "@/lib/auth";
 import Logout from "@/components/Logout/Logout";
 import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +19,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (await isTokenExpired()) {
+  const session = await getServerSession(authOptions);
+
+  if (await isTokenExpired(session!)) {
     return <Logout />;
   }
 
   return (
-    <NextAuthProvider>
+    <NextAuthProvider session={session!}>
       <ApolloClientProvider uri={process.env.GRAPHQL_URL!}>
         <html lang="en">
           <head>

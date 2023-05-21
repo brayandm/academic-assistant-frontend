@@ -13,6 +13,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import { useGetMeQuery } from "@/graphql/graphql";
+import { useSession } from "next-auth/react";
 
 const Dashboard: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -32,6 +34,20 @@ const Dashboard: React.FC = () => {
   const handleLogout = () => {
     signOut();
   };
+
+  const { data: session } = useSession();
+
+  const { data } = useGetMeQuery({
+    context: {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${session?.user?.access_token}`,
+        "Access-Control-Allow-Origin": "*",
+      },
+    },
+  });
+
+  const username = data?.me?.name;
 
   return (
     <div>
@@ -82,6 +98,12 @@ const Dashboard: React.FC = () => {
             </Paper>
           </Grid>
         </Grid>
+        <Typography
+          variant="h1"
+          sx={{ marginTop: "200px", textAlign: "center" }}
+        >
+          Welcome {username}
+        </Typography>
       </Container>
     </div>
   );
