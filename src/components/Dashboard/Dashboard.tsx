@@ -87,7 +87,7 @@ function Dashboard({ username }: DashboardProps) {
           </Grid>
         </Grid>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{ marginTop: "200px", textAlign: "center" }}
         >
           Welcome {username}
