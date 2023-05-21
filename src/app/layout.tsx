@@ -2,10 +2,11 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProvider";
 import { isTokenExpired } from "@/lib/auth";
-import Logout from "@/components/Logout/Logout";
+import Logout from "@/components/Logout";
 import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import MenuNavigation from "@/components/MenuNavigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,7 +36,10 @@ export default async function RootLayout({
               content="initial-scale=1, width=device-width"
             />
           </head>
-          <body className={inter.className}>{children}</body>
+          <body className={inter.className}>
+            <MenuNavigation />
+            {children}
+          </body>
         </html>
       </ApolloClientProvider>
     </NextAuthProvider>
