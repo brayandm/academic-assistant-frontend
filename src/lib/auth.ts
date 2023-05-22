@@ -92,3 +92,21 @@ export async function isTokenExpired(session: Session) {
     new Date(tokenExpiricyDate).getTime() < new Date().getTime()
   );
 }
+
+export async function isTokenValidFromBackend(session: Session) {
+  // @ts-ignore
+  const access_token = session?.user?.access_token;
+
+  try {
+    const res = await axios.get(process.env.VERIFY_URL!, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    return (
+      res.status == 200 && res.data["message"] == "Successful verification"
+    );
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
