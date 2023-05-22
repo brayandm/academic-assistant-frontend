@@ -10,9 +10,11 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 function MenuNavigation() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const router = useRouter();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -22,18 +24,14 @@ function MenuNavigation() {
     setAnchorEl(null);
   };
 
-  const handleUserPage = () => {
-    // Logic to navigate to the user page
-  };
-
-  const handleLogout = () => {
-    signOut();
-  };
-
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <Typography
+          onClick={() => router.push("/dashboard")}
+          variant="h6"
+          sx={{ flexGrow: 1, cursor: "pointer" }}
+        >
           Dashboard
         </Typography>
         <Button color="inherit" onClick={handleClick}>
@@ -52,8 +50,10 @@ function MenuNavigation() {
             horizontal: "right",
           }}
         >
-          <MenuItem onClick={handleUserPage}>Go to User Page</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem onClick={() => router.push("/dashboard/user")}>
+            Profile
+          </MenuItem>
+          <MenuItem onClick={() => signOut()}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>
