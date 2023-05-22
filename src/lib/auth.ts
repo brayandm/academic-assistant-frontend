@@ -57,13 +57,15 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user as any;
+      // @ts-ignore
+      session.user = token.user;
       return session;
     },
   },
   events: {
     async signOut(message) {
-      const access_token = (message.token.user as any).access_token;
+      // @ts-ignore
+      const access_token = message.token.user.access_token;
       try {
         await axios.post(process.env.LOGOUT_URL!, null, {
           headers: { Authorization: `Bearer ${access_token}` },
@@ -82,7 +84,8 @@ export const authOptions: NextAuthOptions = {
 };
 
 export async function isTokenExpired(session: Session) {
-  const tokenExpiricyDate = (session?.user as any).expires_in;
+  // @ts-ignore
+  const tokenExpiricyDate = session?.user?.expires_in;
 
   return (
     tokenExpiricyDate &&
@@ -91,7 +94,8 @@ export async function isTokenExpired(session: Session) {
 }
 
 export async function isTokenValidFromBackend(session: Session) {
-  const access_token = (session?.user as any).access_token;
+  // @ts-ignore
+  const access_token = session?.user?.access_token;
 
   try {
     const res = await axios.get(process.env.VERIFY_URL!, {
