@@ -1,4 +1,4 @@
-export default async function RootLayout({
+export default async function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;

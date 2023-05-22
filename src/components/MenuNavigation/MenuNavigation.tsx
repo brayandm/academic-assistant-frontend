@@ -65,7 +65,7 @@ function MenuNavigation() {
               Teacher
             </MenuItem>
           )}
-          <MenuItem onClick={() => router.push("/dashboard/user")}>
+          <MenuItem onClick={() => router.push("/dashboard/profile")}>
             Profile
           </MenuItem>
           <MenuItem onClick={() => signOut()}>Logout</MenuItem>
