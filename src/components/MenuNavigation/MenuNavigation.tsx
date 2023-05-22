@@ -9,6 +9,7 @@ import {
   Button,
   Menu,
   MenuItem,
+  Box,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -32,12 +33,17 @@ function MenuNavigation() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography
-          onClick={() => router.push("/dashboard")}
-          variant="h6"
-          sx={{ flexGrow: 1, cursor: "pointer" }}
-        >
-          Dashboard
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Box
+            onClick={() => router.push("/dashboard")}
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
+            Dashboard
+          </Box>
         </Typography>
         <Button color="inherit" onClick={handleClick}>
           Menu
