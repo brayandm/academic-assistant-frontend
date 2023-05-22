@@ -7,8 +7,10 @@ export default async function AdminLayout({
 }) {
   return (
     <>
-      <PanelControl />
-      {children}
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <PanelControl />
+        {children}
+      </div>
     </>
   );
 }

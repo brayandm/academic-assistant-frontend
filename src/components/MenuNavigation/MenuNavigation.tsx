@@ -31,7 +31,15 @@ function MenuNavigation() {
   const permissions = (session.data?.user as any).permissions as string[];
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{
+        height: "8vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           <Box

@@ -6,6 +6,7 @@ import Logout from "@/components/Logout";
 import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { MaterialUIProvider } from "@/providers/MaterialUIProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,15 +33,17 @@ export default async function RootLayout({
   return (
     <NextAuthProvider session={session!}>
       <ApolloClientProvider uri={process.env.GRAPHQL_URL!}>
-        <html lang="en">
-          <head>
-            <meta
-              name="viewport"
-              content="initial-scale=1, width=device-width"
-            />
-          </head>
-          <body className={inter.className}>{children}</body>
-        </html>
+        <MaterialUIProvider>
+          <html lang="en">
+            <head>
+              <meta
+                name="viewport"
+                content="initial-scale=1, width=device-width"
+              />
+            </head>
+            <body className={inter.className}>{children}</body>
+          </html>
+        </MaterialUIProvider>
       </ApolloClientProvider>
     </NextAuthProvider>
   );
