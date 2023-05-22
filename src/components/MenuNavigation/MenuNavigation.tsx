@@ -11,6 +11,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function MenuNavigation() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -23,6 +24,10 @@ function MenuNavigation() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const session = useSession();
+
+  const permissions = (session.data?.user as any).permissions as string[];
 
   return (
     <AppBar position="static">
@@ -50,6 +55,16 @@ function MenuNavigation() {
             horizontal: "right",
           }}
         >
+          {permissions.includes("ADMIN") && (
+            <MenuItem onClick={() => router.push("/dashboard/admin")}>
+              Admin
+            </MenuItem>
+          )}
+          {permissions.includes("TEACHER") && (
+            <MenuItem onClick={() => router.push("/dashboard/teacher")}>
+              Teacher
+            </MenuItem>
+          )}
           <MenuItem onClick={() => router.push("/dashboard/user")}>
             Profile
           </MenuItem>
