@@ -69,6 +69,9 @@ function MenuNavigation() {
             horizontal: "right",
           }}
         >
+          <MenuItem onClick={() => router.push("/dashboard")}>
+            Dashboard
+          </MenuItem>
           {permissions.includes("ADMIN") && (
             <MenuItem onClick={() => router.push("/dashboard/admin")}>
               Admin

@@ -1,19 +1,95 @@
 "use client";
 
-import { Box } from "@mui/material";
-import { useTheme } from "@mui/material";
+import { Box, Tabs, Tab, useTheme } from "@mui/material";
+import { useState } from "react";
 
-const PanelControl = () => {
-  const theme = useTheme();
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
   return (
-    <Box
-      sx={{
-        width: "250px",
-        height: "92vh",
-        backgroundColor: theme.palette.primary.dark,
-      }}
-    ></Box>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+interface PanelControlProps {
+  tabs: {
+    icon: any;
+    label: string;
+    component: React.ReactNode;
+  }[];
+}
+
+const PanelControl = ({ tabs }: PanelControlProps) => {
+  const theme = useTheme();
+
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  return (
+    <>
+      <Box
+        sx={{
+          width: "250px",
+          height: "92vh",
+          backgroundColor: theme.palette.primary.dark,
+        }}
+      >
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          orientation="vertical"
+          indicatorColor="primary"
+          textColor="inherit"
+          sx={{
+            width: "250px",
+            height: "92vh",
+            paddingTop: "30px",
+          }}
+        >
+          {tabs.map((tab, index) => (
+            <Tab
+              key={index}
+              icon={tab.icon}
+              label={tab.label}
+              iconPosition="start"
+              aria-label={tab.label}
+              sx={{
+                color: theme.palette.common.white,
+              }}
+              {...a11yProps(index)}
+            />
+          ))}
+        </Tabs>
+      </Box>
+      {tabs.map((tab, index) => (
+        <TabPanel key={index} value={value} index={index}>
+          {tab.component}
+        </TabPanel>
+      ))}
+    </>
   );
 };
 
