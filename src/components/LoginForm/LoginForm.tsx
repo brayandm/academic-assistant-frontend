@@ -3,14 +3,14 @@
 import { Box, TextField, Button, Alert } from "@mui/material";
 import React, { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [timerId, setTimerId] = useState<NodeJS.Timeout | undefined>(undefined);
-  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -18,7 +18,8 @@ const LoginForm: React.FC = () => {
     const res = await signIn("credentials", {
       email: email,
       password: password,
-      redirect: false,
+      redirect: true,
+      callbackUrl: searchParams.get("callbackUrl") || "/dashboard",
     });
 
     if (res) {
@@ -26,8 +27,6 @@ const LoginForm: React.FC = () => {
         clearTimeout(timerId);
         setError(true);
         setTimerId(setTimeout(() => setError(false), 2000));
-      } else {
-        router.push("/dashboard");
       }
     }
   };
