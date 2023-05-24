@@ -52,7 +52,7 @@ const PanelControl = ({ tabs }: PanelControlProps) => {
     <>
       <Box
         sx={{
-          width: "250px",
+          width: "14vw",
           height: "92vh",
           backgroundColor: theme.palette.primary.dark,
         }}
@@ -64,7 +64,7 @@ const PanelControl = ({ tabs }: PanelControlProps) => {
           indicatorColor="primary"
           textColor="inherit"
           sx={{
-            width: "250px",
+            width: "14vw",
             height: "92vh",
             paddingTop: "30px",
           }}
