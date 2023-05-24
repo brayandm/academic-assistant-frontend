@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { Session } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 import axios from "axios";
 
 export const authOptions: NextAuthOptions = {
@@ -109,4 +109,23 @@ export async function isTokenValidFromBackend(session: Session) {
     console.error(error);
     return false;
   }
+}
+
+export async function requiredRoles(permissions: string[]) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) return true;
+
+  if (!(await isTokenValidFromBackend(session))) return false;
+
+  if (await isTokenExpired(session)) return false;
+
+  // @ts-ignore
+  const userPermissions = session?.user?.permissions as string[];
+
+  if (!userPermissions) return false;
+
+  return permissions.every((permission) =>
+    userPermissions.includes(permission)
+  );
 }

@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProvider";
-import { isTokenExpired, isTokenValidFromBackend } from "@/lib/auth";
+import { requiredRoles } from "@/lib/auth";
 import Logout from "@/components/Logout";
 import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
 import { getServerSession } from "next-auth";
@@ -20,15 +20,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  if (!(await requiredRoles([]))) return <Logout />;
+
   const session = await getServerSession(authOptions);
-
-  if (session && !(await isTokenValidFromBackend(session!))) {
-    return <Logout />;
-  }
-
-  if (await isTokenExpired(session!)) {
-    return <Logout />;
-  }
 
   return (
     <NextAuthProvider session={session!}>
