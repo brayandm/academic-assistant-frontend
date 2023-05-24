@@ -65,7 +65,7 @@ export default function UserManagement() {
           sx={{
             backgroundColor: theme.palette.secondary.dark,
             "& 	.MuiTabs-indicator": {
-              backgroundColor: theme.palette.primary.light,
+              backgroundColor: theme.palette.secondary.light,
               top: "5vh",
               height: "0.5vh",
             },
