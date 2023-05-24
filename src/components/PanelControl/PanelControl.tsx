@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Tabs, Tab, useTheme } from "@mui/material";
+import { Box, Tabs, Tab, useTheme, SvgIconProps } from "@mui/material";
 import { useState } from "react";
 
 function a11yProps(index: number) {
@@ -33,7 +33,7 @@ function TabPanel(props: TabPanelProps) {
 }
 interface PanelControlProps {
   tabs: {
-    icon: any;
+    icon: React.ReactElement<SvgIconProps>;
     label: string;
     component: React.ReactNode;
   }[];
