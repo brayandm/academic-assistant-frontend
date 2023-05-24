@@ -5,6 +5,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Typography } from "@mui/material";
+import UserManagement from "@/components/UserManagement";
 
 export default async function Admin() {
   return (
@@ -15,14 +16,7 @@ export default async function Admin() {
             {
               icon: <PersonIcon />,
               label: "User Management",
-              component: (
-                <Typography
-                  variant="h2"
-                  sx={{ marginTop: "200px", textAlign: "center" }}
-                >
-                  Admin Section User Management
-                </Typography>
-              ),
+              component: <UserManagement />,
             },
             {
               icon: <AccountBalanceWalletIcon />,

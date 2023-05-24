@@ -65,8 +65,8 @@ const PanelControl = ({ tabs }: PanelControlProps) => {
           textColor="inherit"
           sx={{
             width: "14vw",
-            height: "92vh",
-            paddingTop: "30px",
+            height: "90vh",
+            padding: "2vh 0 0 0",
           }}
         >
           {tabs.map((tab, index) => (
