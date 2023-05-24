@@ -61,12 +61,14 @@ const PanelControl = ({ tabs }: PanelControlProps) => {
           value={value}
           onChange={handleChange}
           orientation="vertical"
-          indicatorColor="primary"
           textColor="inherit"
           sx={{
             width: "14vw",
             height: "90vh",
             padding: "2vh 0 0 0",
+            "& 	.MuiTabs-indicator": {
+              backgroundColor: "transparent",
+            },
           }}
         >
           {tabs.map((tab, index) => (
