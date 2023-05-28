@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { sdk } from "@/lib/graphqlRequest";
-import { useGetTranslationResultQuery } from "@/graphql/client";
+import { useGetTranslationResultQuery } from "@/graphql/hooks";
 import { useSession } from "next-auth/react";
 
 export default function AiTranslation() {
