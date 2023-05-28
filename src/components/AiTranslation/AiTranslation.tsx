@@ -1,6 +1,7 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -9,6 +10,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { sdk } from "@/lib/graphqlRequest";
+import { useGetTranslationResultQuery } from "@/graphql/client";
 import { useSession } from "next-auth/react";
 
 export default function AiTranslation() {
@@ -19,6 +21,28 @@ export default function AiTranslation() {
   const [taskId, setTaskId] = React.useState("");
 
   const { data: session } = useSession();
+
+  const { data, loading, error, refetch } = useGetTranslationResultQuery({
+    variables: {
+      task_id: taskId,
+    },
+    context: {
+      headers: {
+        // @ts-ignore
+        Authorization: `Bearer ${session?.user?.access_token}`,
+      },
+    },
+  });
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      void refetch();
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [refetch]);
 
   async function handleTranslate() {
     const taskId = (
@@ -99,34 +123,50 @@ export default function AiTranslation() {
           width: "500px",
         }}
       >
-        <TextField
-          id="outlined-multiline-static"
-          label="Text"
-          placeholder="Put the text to translate here"
-          multiline
-          rows={10}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          sx={{ width: "500px", marginTop: "20px" }}
-        />
-        <Button
-          variant="contained"
-          endIcon={<SendIcon />}
-          sx={{ width: "150px", marginTop: "20px", alignSelf: "center" }}
-          onClick={() => handleTranslate()}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "1100px",
+            justifyContent: "space-between",
+          }}
         >
-          Translate
-        </Button>
+          <TextField
+            label="Input"
+            placeholder="Put the text to translate here"
+            multiline
+            rows={10}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            sx={{ width: "500px", marginTop: "20px" }}
+          />
+
+          <TextField
+            label="Output"
+            multiline
+            rows={10}
+            value={
+              data?.getTranslationResult?.status === "SUCCESS"
+                ? data?.getTranslationResult?.text
+                : ""
+            }
+            sx={{ width: "500px", marginTop: "20px" }}
+          />
+        </div>
+
+        {!taskId || data?.getTranslationResult?.status == "SUCCESS" ? (
+          <Button
+            variant="contained"
+            endIcon={<SendIcon />}
+            sx={{ width: "150px", marginTop: "20px", alignSelf: "center" }}
+            onClick={() => handleTranslate()}
+          >
+            Translate
+          </Button>
+        ) : (
+          <CircularProgress sx={{ marginTop: "20px", alignSelf: "center" }} />
+        )}
       </div>
-      {taskId && <TextTranslated taskId={taskId} />}
     </>
   );
-}
-
-interface TextTranslatedProps {
-  taskId: string;
-}
-
-function TextTranslated({ taskId }: TextTranslatedProps) {
-  return <>HOla mundo</>;
 }

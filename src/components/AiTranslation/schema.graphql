@@ -13,3 +13,10 @@ mutation createTranslationTask(
     task_id
   }
 }
+
+query getTranslationResult($task_id: String!) {
+  getTranslationResult(task_id: $task_id) {
+    status
+    text
+  }
+}
