@@ -16,22 +16,29 @@ export default function AiTranslation() {
   const [targetLanguage, setTargetLanguage] = React.useState("Spanish");
   const [markupLanguage, setMarkupLanguage] = React.useState("Latex");
   const [text, setText] = React.useState("");
+  const [taskId, setTaskId] = React.useState("");
 
   const { data: session } = useSession();
 
-  function handleTranslate() {
-    sdk.createTranslationTask(
-      {
-        original_language: originalLanguage,
-        target_language: targetLanguage,
-        text_type: markupLanguage,
-        text: text,
-      },
-      {
-        // @ts-ignore
-        Authorization: `Bearer ${session?.user?.access_token}`,
-      }
-    );
+  async function handleTranslate() {
+    const taskId = (
+      await sdk.createTranslationTask(
+        {
+          original_language: originalLanguage,
+          target_language: targetLanguage,
+          text_type: markupLanguage,
+          text: text,
+        },
+        {
+          // @ts-ignore
+          Authorization: `Bearer ${session?.user?.access_token}`,
+        }
+      )
+    ).createTranslationTask?.task_id;
+
+    if (taskId) {
+      setTaskId(taskId);
+    }
   }
 
   return (
@@ -111,6 +118,15 @@ export default function AiTranslation() {
           Translate
         </Button>
       </div>
+      {taskId && <TextTranslated taskId={taskId} />}
     </>
   );
+}
+
+interface TextTranslatedProps {
+  taskId: string;
+}
+
+function TextTranslated({ taskId }: TextTranslatedProps) {
+  return <>HOla mundo</>;
 }
