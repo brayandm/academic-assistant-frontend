@@ -1,5 +1,5 @@
 import Dashboard from "@/components/Dashboard";
-import { sdk } from "@/lib/client";
+import { sdk } from "@/lib/graphqlRequest";
 import { getHeaders } from "@/utils/graphql";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";

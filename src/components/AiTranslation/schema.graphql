@@ -1,0 +1,15 @@
+mutation createTranslationTask(
+  $original_language: String!
+  $target_language: String!
+  $text_type: String!
+  $text: String!
+) {
+  createTranslationTask(
+    original_language: $original_language
+    target_language: $target_language
+    text_type: $text_type
+    text: $text
+  ) {
+    task_id
+  }
+}

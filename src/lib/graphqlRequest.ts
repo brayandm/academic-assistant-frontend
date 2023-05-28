@@ -1,5 +1,5 @@
 import { GraphQLClient } from "graphql-request";
-import { getSdk } from "@/graphql/server";
+import { getSdk } from "@/graphql/requests";
 
 export const GRAPHQL_ENDPOINT = "http://localhost:83/graphql";
 
