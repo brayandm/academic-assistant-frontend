@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { getSdk } from "@/graphql/requests";
 
-const client = new GraphQLClient(process.env.GRAPHQL_URL!, {
+const client = new GraphQLClient(process.env.GRAPHQL_URL_FROM_SERVER!, {
   headers: {
     "Content-Type": "application/json",
   },

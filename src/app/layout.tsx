@@ -27,8 +27,10 @@ export default async function RootLayout({
 
   return (
     <NextAuthProvider session={session!}>
-      <ApolloClientProvider uri={process.env.GRAPHQL_URL!}>
-        <GraphqlRequestClientProvider uri={process.env.GRAPHQL_URL!}>
+      <ApolloClientProvider uri={process.env.GRAPHQL_URL_FROM_CLIENT!}>
+        <GraphqlRequestClientProvider
+          uri={process.env.GRAPHQL_URL_FROM_CLIENT!}
+        >
           <MaterialUIProvider>
             <html lang="en">
               <head>
