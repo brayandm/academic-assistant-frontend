@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  frontend-nodejs:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    networks:
+      - academic-assistant-local
+    command: npm run dev
+
+networks:
+  academic-assistant-local:
+    driver: bridge
+    external: true
