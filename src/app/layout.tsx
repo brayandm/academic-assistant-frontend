@@ -4,6 +4,7 @@ import { NextAuthProvider } from "@/providers/NextAuthProvider";
 import { requiredRoles } from "@/lib/auth";
 import Logout from "@/components/Logout";
 import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
+import { GraphqlRequestClientProvider } from "@/providers/GraphqlRequestClientProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { MaterialUIProvider } from "@/providers/MaterialUIProvider";
@@ -27,17 +28,19 @@ export default async function RootLayout({
   return (
     <NextAuthProvider session={session!}>
       <ApolloClientProvider uri={process.env.GRAPHQL_URL!}>
-        <MaterialUIProvider>
-          <html lang="en">
-            <head>
-              <meta
-                name="viewport"
-                content="initial-scale=1, width=device-width"
-              />
-            </head>
-            <body className={inter.className}>{children}</body>
-          </html>
-        </MaterialUIProvider>
+        <GraphqlRequestClientProvider uri={process.env.GRAPHQL_URL!}>
+          <MaterialUIProvider>
+            <html lang="en">
+              <head>
+                <meta
+                  name="viewport"
+                  content="initial-scale=1, width=device-width"
+                />
+              </head>
+              <body className={inter.className}>{children}</body>
+            </html>
+          </MaterialUIProvider>
+        </GraphqlRequestClientProvider>
       </ApolloClientProvider>
     </NextAuthProvider>
   );

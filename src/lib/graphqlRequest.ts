@@ -1,14 +1,12 @@
 import { GraphQLClient } from "graphql-request";
 import { getSdk } from "@/graphql/requests";
 
-export const GRAPHQL_ENDPOINT = "http://localhost:83/graphql";
-
-const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
+const client = new GraphQLClient(process.env.GRAPHQL_URL!, {
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-export const sdk = getSdk(client);
+const graphqlRequestServer = getSdk(client);
 
-export default client;
+export default graphqlRequestServer;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   Button,
   CircularProgress,
@@ -9,9 +9,9 @@ import {
   TextField,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { sdk } from "@/lib/graphqlRequest";
 import { useGetTranslationResultQuery } from "@/graphql/hooks";
 import { useSession } from "next-auth/react";
+import { GraphqlRequestClientContext } from "@/providers/GraphqlRequestClientProvider";
 
 export default function AiTranslation() {
   const [originalLanguage, setOriginalLanguage] = React.useState("English");
@@ -19,6 +19,7 @@ export default function AiTranslation() {
   const [markupLanguage, setMarkupLanguage] = React.useState("Latex");
   const [text, setText] = React.useState("");
   const [taskId, setTaskId] = React.useState("");
+  const graphqlRequestClient = useContext(GraphqlRequestClientContext);
 
   const { data: session } = useSession();
 
@@ -46,7 +47,7 @@ export default function AiTranslation() {
 
   async function handleTranslate() {
     const taskId = (
-      await sdk.createTranslationTask(
+      await graphqlRequestClient.createTranslationTask(
         {
           original_language: originalLanguage,
           target_language: targetLanguage,
