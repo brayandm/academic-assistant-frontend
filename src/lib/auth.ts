@@ -57,8 +57,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // @ts-ignore
-      session.user = token.user;
+      session.user = token.user as Session["user"];
       return session;
     },
     async redirect({ url, baseUrl }) {
@@ -67,8 +66,7 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signOut(message) {
-      // @ts-ignore
-      const access_token = message.token.user.access_token;
+      const access_token = (message.token.user as Session["user"]).access_token;
       try {
         await axios.post(process.env.LOGOUT_URL!, null, {
           headers: { Authorization: `Bearer ${access_token}` },
@@ -87,8 +85,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 export async function isTokenExpired(session: Session) {
-  // @ts-ignore
-  const tokenExpiricyDate = session?.user?.expires_in;
+  const tokenExpiricyDate = session?.user.expires_in;
 
   return (
     tokenExpiricyDate &&
@@ -97,8 +94,7 @@ export async function isTokenExpired(session: Session) {
 }
 
 export async function isTokenValidFromBackend(session: Session) {
-  // @ts-ignore
-  const access_token = session?.user?.access_token;
+  const access_token = session?.user.access_token;
 
   try {
     const res = await axios.get(process.env.VERIFY_URL!, {
@@ -123,8 +119,7 @@ export async function requiredRoles(permissions: string[]) {
 
   if (await isTokenExpired(session)) return false;
 
-  // @ts-ignore
-  const userPermissions = session?.user?.permissions as string[];
+  const userPermissions = session?.user.permissions;
 
   if (!userPermissions) return false;
 

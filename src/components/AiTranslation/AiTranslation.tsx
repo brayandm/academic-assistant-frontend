@@ -29,8 +29,7 @@ export default function AiTranslation() {
     },
     context: {
       headers: {
-        // @ts-ignore
-        Authorization: `Bearer ${session?.user?.access_token}`,
+        Authorization: `Bearer ${session?.user.access_token}`,
       },
     },
   });
@@ -55,8 +54,7 @@ export default function AiTranslation() {
           text: text,
         },
         {
-          // @ts-ignore
-          Authorization: `Bearer ${session?.user?.access_token}`,
+          Authorization: `Bearer ${session?.user.access_token}`,
         }
       )
     ).createTranslationTask?.task_id;
