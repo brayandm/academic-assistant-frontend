@@ -40,13 +40,15 @@ export default function AiTranslation() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      void refetch();
+      if (taskId && newRequest) {
+        void refetch();
+      }
     }, 1000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [refetch]);
+  }, [refetch, taskId, newRequest]);
 
   async function handleTranslate() {
     const taskId = (
