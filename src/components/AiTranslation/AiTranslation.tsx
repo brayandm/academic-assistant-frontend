@@ -1,11 +1,13 @@
 import React, { useEffect, useContext } from "react";
 import {
+  Alert,
   Button,
   CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
@@ -20,6 +22,8 @@ export default function AiTranslation() {
   const [text, setText] = React.useState("");
   const [taskId, setTaskId] = React.useState("");
   const graphqlRequestClient = useContext(GraphqlRequestClientContext);
+  const [showError, setShowError] = React.useState(false);
+  const [newRequest, setNewRequest] = React.useState(false);
 
   const { data: session } = useSession();
 
@@ -61,7 +65,15 @@ export default function AiTranslation() {
 
     if (taskId) {
       setTaskId(taskId);
+      setNewRequest(true);
     }
+  }
+
+  if (newRequest && data && data?.getTranslationResult?.status != "PENDING") {
+    if (data?.getTranslationResult?.status == "FAILED") {
+      setShowError(true);
+    }
+    setNewRequest(false);
   }
 
   return (
@@ -145,7 +157,7 @@ export default function AiTranslation() {
             multiline
             rows={10}
             value={
-              data?.getTranslationResult?.status === "SUCCESS"
+              data && data?.getTranslationResult?.status != "PENDING"
                 ? data?.getTranslationResult?.text
                 : ""
             }
@@ -153,7 +165,8 @@ export default function AiTranslation() {
           />
         </div>
 
-        {!taskId || data?.getTranslationResult?.status == "SUCCESS" ? (
+        {!taskId ||
+        (data && data?.getTranslationResult?.status != "PENDING") ? (
           <Button
             variant="contained"
             endIcon={<SendIcon />}
@@ -166,6 +179,19 @@ export default function AiTranslation() {
           <CircularProgress sx={{ marginTop: "20px", alignSelf: "center" }} />
         )}
       </div>
+      <Snackbar
+        open={showError}
+        autoHideDuration={3000}
+        onClose={() => setShowError(false)}
+      >
+        <Alert
+          onClose={() => setShowError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          There was an error translating the text
+        </Alert>
+      </Snackbar>
     </>
   );
 }
