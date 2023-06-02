@@ -82,7 +82,7 @@ export default function AiTranslation() {
         style={{
           display: "flex",
           flexDirection: "row",
-          width: "500px",
+          width: "35vw",
           justifyContent: "space-between",
         }}
       >
@@ -92,7 +92,7 @@ export default function AiTranslation() {
             value={originalLanguage}
             label="From"
             onChange={(e) => setOriginalLanguage(e.target.value)}
-            sx={{ width: "150px" }}
+            sx={{ width: "10vw" }}
           >
             <MenuItem value={"English"}>English</MenuItem>
             <MenuItem value={"Spanish"}>Spanish</MenuItem>
@@ -105,7 +105,7 @@ export default function AiTranslation() {
             value={targetLanguage}
             label="From"
             onChange={(e) => setTargetLanguage(e.target.value)}
-            sx={{ width: "150px" }}
+            sx={{ width: "10vw" }}
           >
             <MenuItem value={"English"}>English</MenuItem>
             <MenuItem value={"Spanish"}>Spanish</MenuItem>
@@ -118,7 +118,7 @@ export default function AiTranslation() {
             value={markupLanguage}
             label="Markup Language"
             onChange={(e) => setMarkupLanguage(e.target.value)}
-            sx={{ width: "150px" }}
+            sx={{ width: "10vw" }}
           >
             <MenuItem value={"Latex"}>Latex</MenuItem>
             <MenuItem value={"Html"}>Html</MenuItem>
@@ -131,14 +131,14 @@ export default function AiTranslation() {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "500px",
+          width: "35vw",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "row",
-            width: "1100px",
+            width: "75vw",
             justifyContent: "space-between",
           }}
         >
@@ -149,7 +149,7 @@ export default function AiTranslation() {
             rows={10}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            sx={{ width: "500px", marginTop: "20px" }}
+            sx={{ width: "35vw", marginTop: "20px" }}
           />
 
           <TextField
@@ -161,7 +161,7 @@ export default function AiTranslation() {
                 ? data?.getTranslationResult?.text
                 : ""
             }
-            sx={{ width: "500px", marginTop: "20px" }}
+            sx={{ width: "35vw", marginTop: "20px" }}
           />
         </div>
 
