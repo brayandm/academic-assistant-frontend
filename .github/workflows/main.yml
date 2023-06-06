@@ -19,7 +19,7 @@ jobs:
       with:
         clean: false
     - name: Copying .env
-      run: mv .env.example .env
+      run: echo "${{ secrets.ENV_PRODUCTION }}" > .env
     - name: Stopping the containers 
       run: docker compose -f docker-compose.prod.yml down
     - name: Building the containers 
