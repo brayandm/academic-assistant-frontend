@@ -1,11 +1,13 @@
 import React, { useEffect, useContext } from "react";
 import {
+  Alert,
   Button,
   CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
@@ -20,6 +22,8 @@ export default function AiTranslation() {
   const [text, setText] = React.useState("");
   const [taskId, setTaskId] = React.useState("");
   const graphqlRequestClient = useContext(GraphqlRequestClientContext);
+  const [showError, setShowError] = React.useState(false);
+  const [newRequest, setNewRequest] = React.useState(false);
 
   const { data: session } = useSession();
 
@@ -36,13 +40,15 @@ export default function AiTranslation() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      void refetch();
+      if (taskId && newRequest) {
+        void refetch();
+      }
     }, 1000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [refetch]);
+  }, [refetch, taskId, newRequest]);
 
   async function handleTranslate() {
     const taskId = (
@@ -61,7 +67,15 @@ export default function AiTranslation() {
 
     if (taskId) {
       setTaskId(taskId);
+      setNewRequest(true);
     }
+  }
+
+  if (newRequest && data && data?.getTranslationResult?.status != "PENDING") {
+    if (data?.getTranslationResult?.status == "FAILED") {
+      setShowError(true);
+    }
+    setNewRequest(false);
   }
 
   return (
@@ -70,7 +84,7 @@ export default function AiTranslation() {
         style={{
           display: "flex",
           flexDirection: "row",
-          width: "500px",
+          width: "35vw",
           justifyContent: "space-between",
         }}
       >
@@ -80,7 +94,7 @@ export default function AiTranslation() {
             value={originalLanguage}
             label="From"
             onChange={(e) => setOriginalLanguage(e.target.value)}
-            sx={{ width: "150px" }}
+            sx={{ width: "10vw" }}
           >
             <MenuItem value={"English"}>English</MenuItem>
             <MenuItem value={"Spanish"}>Spanish</MenuItem>
@@ -93,7 +107,7 @@ export default function AiTranslation() {
             value={targetLanguage}
             label="From"
             onChange={(e) => setTargetLanguage(e.target.value)}
-            sx={{ width: "150px" }}
+            sx={{ width: "10vw" }}
           >
             <MenuItem value={"English"}>English</MenuItem>
             <MenuItem value={"Spanish"}>Spanish</MenuItem>
@@ -106,7 +120,7 @@ export default function AiTranslation() {
             value={markupLanguage}
             label="Markup Language"
             onChange={(e) => setMarkupLanguage(e.target.value)}
-            sx={{ width: "150px" }}
+            sx={{ width: "10vw" }}
           >
             <MenuItem value={"Latex"}>Latex</MenuItem>
             <MenuItem value={"Html"}>Html</MenuItem>
@@ -119,14 +133,14 @@ export default function AiTranslation() {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "500px",
+          width: "35vw",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "row",
-            width: "1100px",
+            width: "75vw",
             justifyContent: "space-between",
           }}
         >
@@ -137,7 +151,7 @@ export default function AiTranslation() {
             rows={10}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            sx={{ width: "500px", marginTop: "20px" }}
+            sx={{ width: "35vw", marginTop: "20px" }}
           />
 
           <TextField
@@ -145,15 +159,16 @@ export default function AiTranslation() {
             multiline
             rows={10}
             value={
-              data?.getTranslationResult?.status === "SUCCESS"
+              data && data?.getTranslationResult?.status != "PENDING"
                 ? data?.getTranslationResult?.text
                 : ""
             }
-            sx={{ width: "500px", marginTop: "20px" }}
+            sx={{ width: "35vw", marginTop: "20px" }}
           />
         </div>
 
-        {!taskId || data?.getTranslationResult?.status == "SUCCESS" ? (
+        {!taskId ||
+        (data && data?.getTranslationResult?.status != "PENDING") ? (
           <Button
             variant="contained"
             endIcon={<SendIcon />}
@@ -166,6 +181,19 @@ export default function AiTranslation() {
           <CircularProgress sx={{ marginTop: "20px", alignSelf: "center" }} />
         )}
       </div>
+      <Snackbar
+        open={showError}
+        autoHideDuration={3000}
+        onClose={() => setShowError(false)}
+      >
+        <Alert
+          onClose={() => setShowError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          There was an error translating the text
+        </Alert>
+      </Snackbar>
     </>
   );
 }
