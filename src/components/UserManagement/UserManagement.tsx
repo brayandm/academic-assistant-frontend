@@ -1,5 +1,6 @@
 import * as React from "react";
 import TabSection from "@/components/TabSection";
+import UsersTable from "../UsersTable/UsersTable";
 
 export default function UserManagement() {
   return (
@@ -7,7 +8,7 @@ export default function UserManagement() {
       tabs={[
         {
           label: "Users",
-          component: <div>Users</div>,
+          component: <UsersTable />,
         },
         {
           label: "Roles",
