@@ -10,3 +10,16 @@ query users {
     }
   }
 }
+
+mutation createUser(
+  $name: String!
+  $email: String!
+  $password: String!
+  $roles: [String!]!
+) {
+  createUser(name: $name, email: $email, password: $password, roles: $roles) {
+    id
+    name
+    email
+  }
+}

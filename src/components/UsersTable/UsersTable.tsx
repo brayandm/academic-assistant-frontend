@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useContext, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -27,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { GraphqlRequestClientContext } from "@/providers/GraphqlRequestClientProvider";
 
 const style = {
   position: "absolute" as "absolute",
@@ -51,6 +53,8 @@ type createUserForm = {
 export default function UsersTable() {
   const { data: session } = useSession();
 
+  const graphqlRequestClient = useContext(GraphqlRequestClientContext);
+
   const { data } = useUsersQuery({
     context: {
       headers: {
@@ -73,15 +77,31 @@ export default function UsersTable() {
     event.preventDefault();
   };
 
-  const [createUserFormData, setCreateUserFormData] =
-    React.useState<createUserForm>({
+  const [createUserFormData, setCreateUserFormData] = useState<createUserForm>({
+    name: "",
+    email: "",
+    password: "",
+    roles: [],
+  });
+
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const createUserResult = await graphqlRequestClient.createUser(
+      createUserFormData,
+      {
+        Authorization: `Bearer ${session?.user.access_token}`,
+      }
+    );
+
+    setCreateUserFormData({
       name: "",
       email: "",
       password: "",
       roles: [],
     });
 
-  console.log(createUserFormData);
+    setOpen(false);
+  };
 
   return (
     <>
@@ -94,8 +114,8 @@ export default function UsersTable() {
         Create User
       </Button>
       {data && (
-        <TableContainer sx={{ width: 700 }} component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="simple table">
+        <TableContainer sx={{ width: 1000 }} component={Paper}>
+          <Table sx={{ minWidth: 1000 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
@@ -145,9 +165,8 @@ export default function UsersTable() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box component="form" sx={style}>
+        <Box component="form" sx={style} onSubmit={handleOnSubmit}>
           <TextField
-            id="outlined-basic"
             label="Name"
             variant="outlined"
             value={createUserFormData.name}
@@ -161,7 +180,6 @@ export default function UsersTable() {
             sx={{ marginBottom: "20px" }}
           />
           <TextField
-            id="outlined-basic"
             label="Email"
             type="email"
             variant="outlined"
