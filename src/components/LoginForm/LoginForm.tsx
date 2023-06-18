@@ -1,9 +1,20 @@
 "use client";
 
-import { Box, TextField, Button, Alert } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Alert,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import React, { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +22,16 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState(false);
   const [timerId, setTimerId] = useState<NodeJS.Timeout | undefined>(undefined);
   const searchParams = useSearchParams();
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -60,16 +81,33 @@ const LoginForm: React.FC = () => {
         value={email}
         onChange={(event) => setEmail(event.target.value)}
       />
-      <TextField
-        id="password"
-        label="Password"
+      <FormControl
         variant="outlined"
-        type="password"
-        margin="normal"
-        required
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
+        sx={{ marginBottom: "20px", height: "56px" }}
+      >
+        <InputLabel htmlFor="outlined-adornment-password" required>
+          Password
+        </InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showPassword ? "text" : "password"}
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+        />
+      </FormControl>
       <Button variant="contained" type="submit" sx={{ marginTop: "16px" }}>
         Sign In
       </Button>
