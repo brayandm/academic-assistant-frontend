@@ -55,7 +55,7 @@ export default function UsersTable() {
 
   const graphqlRequestClient = useContext(GraphqlRequestClientContext);
 
-  const { data } = useUsersQuery({
+  const { data, refetch: refetchUsers } = useUsersQuery({
     context: {
       headers: {
         Authorization: `Bearer ${session?.user.access_token}`,
@@ -101,6 +101,8 @@ export default function UsersTable() {
     });
 
     setOpen(false);
+
+    refetchUsers();
   };
 
   return (
