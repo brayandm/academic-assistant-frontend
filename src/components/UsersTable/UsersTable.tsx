@@ -41,6 +41,13 @@ const style = {
   p: 4,
 };
 
+type createUserForm = {
+  name: string;
+  email: string;
+  password: string;
+  roles: string[];
+};
+
 export default function UsersTable() {
   const { data: session } = useSession();
 
@@ -65,6 +72,16 @@ export default function UsersTable() {
   ) => {
     event.preventDefault();
   };
+
+  const [createUserFormData, setCreateUserFormData] =
+    React.useState<createUserForm>({
+      name: "",
+      email: "",
+      password: "",
+      roles: [],
+    });
+
+  console.log(createUserFormData);
 
   return (
     <>
@@ -128,26 +145,51 @@ export default function UsersTable() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box component="form" sx={style}>
           <TextField
             id="outlined-basic"
             label="Name"
             variant="outlined"
+            value={createUserFormData.name}
+            onChange={(e) =>
+              setCreateUserFormData((prev) => ({
+                ...prev,
+                name: e.target.value,
+              }))
+            }
+            required
             sx={{ marginBottom: "20px" }}
           />
           <TextField
             id="outlined-basic"
             label="Email"
+            type="email"
             variant="outlined"
+            value={createUserFormData.email}
+            onChange={(e) =>
+              setCreateUserFormData((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }))
+            }
+            required
             sx={{ marginBottom: "20px" }}
           />
           <FormControl variant="outlined" sx={{ marginBottom: "20px" }}>
-            <InputLabel htmlFor="outlined-adornment-password">
+            <InputLabel htmlFor="outlined-adornment-password" required>
               Password
             </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
+              required
+              value={createUserFormData.password}
+              onChange={(e) =>
+                setCreateUserFormData((prev) => ({
+                  ...prev,
+                  password: e.target.value,
+                }))
+              }
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -167,12 +209,70 @@ export default function UsersTable() {
             Roles:
           </Typography>
           <FormGroup sx={{ flexDirection: "row" }}>
-            <FormControlLabel control={<Checkbox />} label="Student" />
-            <FormControlLabel control={<Checkbox />} label="Teacher" />
-            <FormControlLabel control={<Checkbox />} label="Admin" />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setCreateUserFormData((prev) => ({
+                        ...prev,
+                        roles: [...prev.roles, "STUDENT"],
+                      }));
+                    } else {
+                      setCreateUserFormData((prev) => ({
+                        ...prev,
+                        roles: prev.roles.filter((role) => role !== "STUDENT"),
+                      }));
+                    }
+                  }}
+                />
+              }
+              label="Student"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setCreateUserFormData((prev) => ({
+                        ...prev,
+                        roles: [...prev.roles, "TEACHER"],
+                      }));
+                    } else {
+                      setCreateUserFormData((prev) => ({
+                        ...prev,
+                        roles: prev.roles.filter((role) => role !== "TEACHER"),
+                      }));
+                    }
+                  }}
+                />
+              }
+              label="Teacher"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setCreateUserFormData((prev) => ({
+                        ...prev,
+                        roles: [...prev.roles, "ADMIN"],
+                      }));
+                    } else {
+                      setCreateUserFormData((prev) => ({
+                        ...prev,
+                        roles: prev.roles.filter((role) => role !== "ADMIN"),
+                      }));
+                    }
+                  }}
+                />
+              }
+              label="Admin"
+            />
           </FormGroup>
           <Button
             variant="contained"
+            type="submit"
             endIcon={<AddIcon />}
             sx={{ alignSelf: "center", marginTop: "40px" }}
           >
