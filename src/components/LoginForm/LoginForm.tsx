@@ -83,6 +83,7 @@ const LoginForm: React.FC = () => {
         label="Email"
         variant="outlined"
         margin="normal"
+        type="email"
         required
         value={email}
         onChange={(event) => setEmail(event.target.value)}
