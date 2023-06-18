@@ -15,6 +15,7 @@ import React, { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState(false);
   const [timerId, setTimerId] = useState<NodeJS.Timeout | undefined>(undefined);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -39,8 +41,7 @@ const LoginForm: React.FC = () => {
     const res = await signIn("credentials", {
       email: email,
       password: password,
-      redirect: true,
-      callbackUrl: searchParams.get("callbackUrl") || "/dashboard",
+      redirect: false,
     });
 
     if (res) {
@@ -48,8 +49,13 @@ const LoginForm: React.FC = () => {
         clearTimeout(timerId);
         setError(true);
         setTimerId(setTimeout(() => setError(false), 2000));
+        return;
       }
     }
+
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+
+    router.push(callbackUrl);
   };
 
   return (
