@@ -98,6 +98,7 @@ const LoginForm: React.FC = () => {
           id="outlined-adornment-password"
           type={showPassword ? "text" : "password"}
           value={password}
+          required
           onChange={(event) => setPassword(event.target.value)}
           endAdornment={
             <InputAdornment position="end">
