@@ -10,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import { useUsersQuery } from "@/graphql/hooks";
 import { useSession } from "next-auth/react";
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -21,6 +22,7 @@ import {
   InputLabel,
   Modal,
   OutlinedInput,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -84,26 +86,36 @@ export default function UsersTable() {
     roles: [],
   });
 
-  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const createUserResult = await graphqlRequestClient.createUser(
-      createUserFormData,
-      {
-        Authorization: `Bearer ${session?.user.access_token}`,
-      }
-    );
-
-    setCreateUserFormData({
-      name: "",
-      email: "",
-      password: "",
-      roles: [],
-    });
-
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setOpen(false);
 
-    refetchUsers();
+    e.preventDefault();
+    graphqlRequestClient
+      .createUser(createUserFormData, {
+        Authorization: `Bearer ${session?.user.access_token}`,
+      })
+      .then(() => {
+        setAlertType("success");
+      })
+      .catch(() => {
+        setAlertType("error");
+      })
+      .finally(() => {
+        setShowAlert(true);
+
+        setCreateUserFormData({
+          name: "",
+          email: "",
+          password: "",
+          roles: [],
+        });
+
+        refetchUsers();
+      });
   };
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertType, setAlertType] = useState<"success" | "error">("success");
 
   return (
     <>
@@ -300,6 +312,21 @@ export default function UsersTable() {
           </Button>
         </Box>
       </Modal>
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowAlert(false)}
+      >
+        <Alert
+          onClose={() => setShowAlert(false)}
+          severity={alertType}
+          sx={{ width: "100%" }}
+        >
+          {alertType === "success"
+            ? "User created successfully"
+            : "There was an error creating the user"}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
