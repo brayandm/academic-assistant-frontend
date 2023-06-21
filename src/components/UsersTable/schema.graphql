@@ -30,3 +30,11 @@ mutation createUser(
     email
   }
 }
+
+mutation deleteUser($id: ID!) {
+  deleteUser(id: $id) {
+    id
+    name
+    email
+  }
+}

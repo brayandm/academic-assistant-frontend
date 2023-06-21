@@ -104,9 +104,11 @@ export default function UsersTable() {
       })
       .then(() => {
         setAlertType("success");
+        setAlertMessage("User created successfully");
       })
       .catch(() => {
         setAlertType("error");
+        setAlertMessage("There was an error creating the user");
       })
       .finally(() => {
         setShowAlert(true);
@@ -122,8 +124,32 @@ export default function UsersTable() {
       });
   };
 
+  const handleOnDelete = (id: string) => {
+    graphqlRequestClient
+      .deleteUser(
+        { id: id },
+        {
+          Authorization: `Bearer ${session?.user.access_token}`,
+        }
+      )
+      .then(() => {
+        setAlertType("success");
+        setAlertMessage("User deleted successfully");
+      })
+      .catch(() => {
+        setAlertType("error");
+        setAlertMessage("There was an error deleting the user");
+      })
+      .finally(() => {
+        setShowAlert(true);
+
+        refetchUsers();
+      });
+  };
+
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState<"success" | "error">("success");
+  const [alertMessage, setAlertMessage] = useState("");
 
   return (
     <>
@@ -171,7 +197,11 @@ export default function UsersTable() {
                     </IconButton>
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton aria-label="delete" size="large">
+                    <IconButton
+                      aria-label="delete"
+                      size="large"
+                      onClick={() => handleOnDelete(user.id)}
+                    >
                       <DeleteIcon fontSize="inherit" />
                     </IconButton>
                   </TableCell>
@@ -298,9 +328,7 @@ export default function UsersTable() {
           severity={alertType}
           sx={{ width: "100%" }}
         >
-          {alertType === "success"
-            ? "User created successfully"
-            : "There was an error creating the user"}
+          {alertMessage}
         </Alert>
       </Snackbar>
     </>
