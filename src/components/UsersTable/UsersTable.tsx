@@ -128,8 +128,8 @@ export default function UsersTable() {
         Create User
       </Button>
       {data && (
-        <TableContainer sx={{ width: 1000 }} component={Paper}>
-          <Table sx={{ minWidth: 1000 }} aria-label="simple table">
+        <TableContainer sx={{ width: "60vw" }} component={Paper}>
+          <Table sx={{ minWidth: "60vw" }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
