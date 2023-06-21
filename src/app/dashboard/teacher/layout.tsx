@@ -6,6 +6,7 @@ export default async function TeacherLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!(await requiredPolicies(["TEACHER_PORTAL_ACCESS"]))) return <Logout />;
+  if (!(await requiredPolicies(["TEACHER_DASHBOARD_ACCESS"])))
+    return <Logout />;
   return <>{children}</>;
 }

@@ -6,6 +6,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!(await requiredPolicies(["ADMIN_PORTAL_ACCESS"]))) return <Logout />;
+  if (!(await requiredPolicies(["ADMIN_DASHBOARD_ACCESS"]))) return <Logout />;
   return <>{children}</>;
 }

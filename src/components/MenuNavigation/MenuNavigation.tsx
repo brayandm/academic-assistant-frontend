@@ -72,12 +72,12 @@ function MenuNavigation() {
           <MenuItem onClick={() => router.push("/dashboard")}>
             Dashboard
           </MenuItem>
-          {policies && policies.includes("ADMIN_PORTAL_ACCESS") && (
+          {policies && policies.includes("ADMIN_DASHBOARD_ACCESS") && (
             <MenuItem onClick={() => router.push("/dashboard/admin")}>
               Admin
             </MenuItem>
           )}
-          {policies && policies.includes("TEACHER_PORTAL_ACCESS") && (
+          {policies && policies.includes("TEACHER_DASHBOARD_ACCESS") && (
             <MenuItem onClick={() => router.push("/dashboard/teacher")}>
               Teacher
             </MenuItem>
