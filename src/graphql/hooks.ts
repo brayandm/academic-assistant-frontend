@@ -114,6 +114,7 @@ export type PaginatorInfo = {
 export type Query = {
   getTranslationResult?: Maybe<TranslationResult>;
   me?: Maybe<User>;
+  roles: Array<Role>;
   user?: Maybe<User>;
   users: UserPaginator;
 };
@@ -198,7 +199,14 @@ export type UserPaginator = {
   paginatorInfo: PaginatorInfo;
 };
 
-export enum UsersRoles {
+export enum UserPolicies {
+  AdminDashboardAccess = "ADMIN_DASHBOARD_ACCESS",
+  TeacherDashboardAccess = "TEACHER_DASHBOARD_ACCESS",
+  TranslationTaskManagement = "TRANSLATION_TASK_MANAGEMENT",
+  UserManagement = "USER_MANAGEMENT",
+}
+
+export enum UserRoles {
   Admin = "ADMIN",
   Student = "STUDENT",
   Teacher = "TEACHER",
@@ -239,6 +247,10 @@ export type UsersQuery = {
     }>;
   };
 };
+
+export type RolesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RolesQuery = { roles: Array<{ id: string; name: string }> };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars["String"];
@@ -473,6 +485,54 @@ export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<
   UsersQuery,
   UsersQueryVariables
+>;
+export const RolesDocument = /*#__PURE__*/ gql`
+  query roles {
+    roles {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useRolesQuery__
+ *
+ * To run a query within a React component, call `useRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRolesQuery(
+  baseOptions?: Apollo.QueryHookOptions<RolesQuery, RolesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<RolesQuery, RolesQueryVariables>(
+    RolesDocument,
+    options
+  );
+}
+export function useRolesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<RolesQuery, RolesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<RolesQuery, RolesQueryVariables>(
+    RolesDocument,
+    options
+  );
+}
+export type RolesQueryHookResult = ReturnType<typeof useRolesQuery>;
+export type RolesLazyQueryHookResult = ReturnType<typeof useRolesLazyQuery>;
+export type RolesQueryResult = Apollo.QueryResult<
+  RolesQuery,
+  RolesQueryVariables
 >;
 export const CreateUserDocument = /*#__PURE__*/ gql`
   mutation createUser(

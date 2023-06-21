@@ -114,6 +114,7 @@ export type PaginatorInfo = {
 export type Query = {
   getTranslationResult?: Maybe<TranslationResult>;
   me?: Maybe<User>;
+  roles: Array<Role>;
   user?: Maybe<User>;
   users: UserPaginator;
 };
@@ -198,7 +199,14 @@ export type UserPaginator = {
   paginatorInfo: PaginatorInfo;
 };
 
-export enum UsersRoles {
+export enum UserPolicies {
+  AdminDashboardAccess = "ADMIN_DASHBOARD_ACCESS",
+  TeacherDashboardAccess = "TEACHER_DASHBOARD_ACCESS",
+  TranslationTaskManagement = "TRANSLATION_TASK_MANAGEMENT",
+  UserManagement = "USER_MANAGEMENT",
+}
+
+export enum UserRoles {
   Admin = "ADMIN",
   Student = "STUDENT",
   Teacher = "TEACHER",
@@ -239,6 +247,10 @@ export type UsersQuery = {
     }>;
   };
 };
+
+export type RolesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RolesQuery = { roles: Array<{ id: string; name: string }> };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars["String"];
@@ -294,6 +306,14 @@ export const UsersDocument = /*#__PURE__*/ gql`
           name
         }
       }
+    }
+  }
+`;
+export const RolesDocument = /*#__PURE__*/ gql`
+  query roles {
+    roles {
+      id
+      name
     }
   }
 `;
@@ -384,6 +404,20 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         "users",
+        "query"
+      );
+    },
+    roles(
+      variables?: RolesQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<RolesQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RolesQuery>(RolesDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        "roles",
         "query"
       );
     },

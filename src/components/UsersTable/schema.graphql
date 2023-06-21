@@ -11,6 +11,13 @@ query users {
   }
 }
 
+query roles {
+  roles {
+    id
+    name
+  }
+}
+
 mutation createUser(
   $name: String!
   $email: String!

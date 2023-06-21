@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useUsersQuery } from "@/graphql/hooks";
+import { useUsersQuery, useRolesQuery } from "@/graphql/hooks";
 import { useSession } from "next-auth/react";
 import {
   Alert,
@@ -58,6 +58,14 @@ export default function UsersTable() {
   const graphqlRequestClient = useContext(GraphqlRequestClientContext);
 
   const { data, refetch: refetchUsers } = useUsersQuery({
+    context: {
+      headers: {
+        Authorization: `Bearer ${session?.user.access_token}`,
+      },
+    },
+  });
+
+  const { data: roles } = useRolesQuery({
     context: {
       headers: {
         Authorization: `Bearer ${session?.user.access_token}`,
@@ -241,66 +249,34 @@ export default function UsersTable() {
             Roles:
           </Typography>
           <FormGroup sx={{ flexDirection: "row" }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setCreateUserFormData((prev) => ({
-                        ...prev,
-                        roles: [...prev.roles, "STUDENT"],
-                      }));
-                    } else {
-                      setCreateUserFormData((prev) => ({
-                        ...prev,
-                        roles: prev.roles.filter((role) => role !== "STUDENT"),
-                      }));
-                    }
-                  }}
-                />
-              }
-              label="Student"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setCreateUserFormData((prev) => ({
-                        ...prev,
-                        roles: [...prev.roles, "TEACHER"],
-                      }));
-                    } else {
-                      setCreateUserFormData((prev) => ({
-                        ...prev,
-                        roles: prev.roles.filter((role) => role !== "TEACHER"),
-                      }));
-                    }
-                  }}
-                />
-              }
-              label="Teacher"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setCreateUserFormData((prev) => ({
-                        ...prev,
-                        roles: [...prev.roles, "ADMIN"],
-                      }));
-                    } else {
-                      setCreateUserFormData((prev) => ({
-                        ...prev,
-                        roles: prev.roles.filter((role) => role !== "ADMIN"),
-                      }));
-                    }
-                  }}
-                />
-              }
-              label="Admin"
-            />
+            {roles?.roles.map((role) => (
+              <FormControlLabel
+                key={role.id}
+                control={
+                  <Checkbox
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setCreateUserFormData((prev) => ({
+                          ...prev,
+                          roles: [...prev.roles, role.name],
+                        }));
+                      } else {
+                        setCreateUserFormData((prev) => ({
+                          ...prev,
+                          roles: prev.roles.filter(
+                            (prevRole) => prevRole !== role.name
+                          ),
+                        }));
+                      }
+                    }}
+                  />
+                }
+                label={
+                  role.name.charAt(0).toUpperCase() +
+                  role.name.slice(1).toLowerCase()
+                }
+              />
+            ))}
           </FormGroup>
           <Button
             variant="contained"
