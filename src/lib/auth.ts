@@ -110,7 +110,7 @@ export async function isTokenValidFromBackend(session: Session) {
   }
 }
 
-export async function requiredRoles(policies: string[]) {
+export async function requiredPolicies(policies: string[]) {
   const session = await getServerSession(authOptions);
 
   if (!session) return true;

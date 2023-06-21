@@ -1,11 +1,11 @@
 import Logout from "@/components/Logout";
-import { requiredRoles } from "@/lib/auth";
+import { requiredPolicies } from "@/lib/auth";
 
 export default async function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  if (!(await requiredRoles([]))) return <Logout />;
+  if (!(await requiredPolicies([]))) return <Logout />;
   return <>{children}</>;
 }

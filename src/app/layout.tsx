@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProvider";
-import { requiredRoles } from "@/lib/auth";
+import { requiredPolicies } from "@/lib/auth";
 import Logout from "@/components/Logout";
 import { ApolloClientProvider } from "@/providers/ApolloClientProvider";
 import { GraphqlRequestClientProvider } from "@/providers/GraphqlRequestClientProvider";
@@ -21,7 +21,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!(await requiredRoles([]))) return <Logout />;
+  if (!(await requiredPolicies([]))) return <Logout />;
 
   const session = await getServerSession(authOptions);
 
