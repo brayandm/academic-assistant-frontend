@@ -15,8 +15,8 @@ export default function UserManagement() {
           component: <div>Roles</div>,
         },
         {
-          label: "Permissions",
-          component: <div>Permissions</div>,
+          label: "Policies",
+          component: <div>Policies</div>,
         },
       ]}
     />

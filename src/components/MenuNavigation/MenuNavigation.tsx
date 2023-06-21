@@ -28,7 +28,7 @@ function MenuNavigation() {
 
   const { data: session } = useSession();
 
-  const permissions = session?.user.permissions;
+  const policies = session?.user.policies;
 
   return (
     <AppBar
@@ -72,12 +72,12 @@ function MenuNavigation() {
           <MenuItem onClick={() => router.push("/dashboard")}>
             Dashboard
           </MenuItem>
-          {permissions && permissions.includes("ADMIN") && (
+          {policies && policies.includes("ADMIN_PORTAL_ACCESS") && (
             <MenuItem onClick={() => router.push("/dashboard/admin")}>
               Admin
             </MenuItem>
           )}
-          {permissions && permissions.includes("TEACHER") && (
+          {policies && policies.includes("TEACHER_PORTAL_ACCESS") && (
             <MenuItem onClick={() => router.push("/dashboard/teacher")}>
               Teacher
             </MenuItem>

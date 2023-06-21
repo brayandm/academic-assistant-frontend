@@ -110,7 +110,7 @@ export async function isTokenValidFromBackend(session: Session) {
   }
 }
 
-export async function requiredRoles(permissions: string[]) {
+export async function requiredRoles(policies: string[]) {
   const session = await getServerSession(authOptions);
 
   if (!session) return true;
@@ -119,11 +119,9 @@ export async function requiredRoles(permissions: string[]) {
 
   if (await isTokenExpired(session)) return false;
 
-  const userPermissions = session?.user.permissions;
+  const userPolicies = session?.user.policies;
 
-  if (!userPermissions) return false;
+  if (!userPolicies) return false;
 
-  return permissions.every((permission) =>
-    userPermissions.includes(permission)
-  );
+  return policies.every((policy) => userPolicies.includes(policy));
 }

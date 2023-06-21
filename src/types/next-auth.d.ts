@@ -5,7 +5,7 @@ declare module "next-auth" {
     user: {
       access_token?: string;
       expires_in?: string;
-      permissions?: [string];
+      policies?: [string];
       token_type?: string;
     };
   }
