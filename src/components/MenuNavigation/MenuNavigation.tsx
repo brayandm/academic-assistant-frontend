@@ -72,6 +72,12 @@ function MenuNavigation() {
           <MenuItem onClick={() => router.push("/dashboard")}>
             Dashboard
           </MenuItem>
+          {policies && policies.includes("AI_ASSISTANT_DASHBOARD_ACCESS") && (
+            <MenuItem onClick={() => router.push("/dashboard/assistant")}>
+              AI Assistant
+            </MenuItem>
+          )}
+
           {policies && policies.includes("ADMIN_DASHBOARD_ACCESS") && (
             <MenuItem onClick={() => router.push("/dashboard/admin")}>
               Admin
