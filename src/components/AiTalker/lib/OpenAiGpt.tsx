@@ -1,59 +1,59 @@
 type OpenAiGptSettings = {
-    openAiGptStreamerUrl: string;
-    preMessages?: { role: string; content: string }[];
+  openAiGptStreamerUrl: string;
+  preMessages?: { role: string; content: string }[];
 };
 class OpenAiGpt {
-    settings: OpenAiGptSettings;
+  settings: OpenAiGptSettings;
 
-    stopStreamSignal: boolean = false;
+  stopStreamSignal: boolean = false;
 
-    constructor(settings: OpenAiGptSettings) {
-        this.settings = settings;
-    }
+  constructor(settings: OpenAiGptSettings) {
+    this.settings = settings;
+  }
 
-    stopGpt() {
-        this.stopStreamSignal = true;
-    }
+  stopGpt() {
+    this.stopStreamSignal = true;
+  }
 
-    async callGpt(
-        messages: { role: string; content: string }[],
-        callback: (text: string) => void,
-        onFinish: () => void
-    ) {
+  async callGpt(
+    messages: { role: string; content: string }[],
+    callback: (text: string) => void,
+    onFinish: () => void
+  ) {
+    this.stopStreamSignal = false;
+
+    const ws = new WebSocket(this.settings.openAiGptStreamerUrl);
+
+    const onMessage = (data: string | null) => {
+      if (this.stopStreamSignal) return;
+      if (data) {
+        callback(data);
+      } else {
         this.stopStreamSignal = false;
+        onFinish();
+      }
+    };
 
-        const ws = new WebSocket(this.settings.openAiGptStreamerUrl);
+    ws.onerror = console.error;
 
-        const onMessage = (data: string | null) => {
-            if (this.stopStreamSignal) return;
-            if (data) {
-                callback(data);
-            } else {
-                this.stopStreamSignal = false;
-                onFinish();
-            }
-        };
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify(
+          this.settings.preMessages
+            ? this.settings.preMessages.concat(messages)
+            : messages
+        )
+      );
+    };
 
-        ws.onerror = console.error;
+    ws.onmessage = (message) => {
+      const response = JSON.parse(message.data.toString()) as {
+        data: string | null;
+      };
 
-        ws.onopen = () => {
-            ws.send(
-                JSON.stringify(
-                    this.settings.preMessages
-                        ? this.settings.preMessages.concat(messages)
-                        : messages
-                )
-            );
-        };
-
-        ws.onmessage = (message) => {
-            const response = JSON.parse(message.data.toString()) as {
-                data: string | null;
-            };
-
-            onMessage(response.data);
-        };
-    }
+      onMessage(response.data);
+    };
+  }
 }
 
 export default OpenAiGpt;

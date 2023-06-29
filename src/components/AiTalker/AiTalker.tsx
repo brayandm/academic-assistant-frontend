@@ -7,289 +7,274 @@ import OpenAiGpt from "./lib/OpenAiGpt";
 import "./styles.css";
 
 interface AiTalkerProps {
-    openAiGptStreamerUrl: string;
-    awsPollyStreamerUrl: string;
-    awsTranscribeStreamerUrl: string;
-    pollyVoice?: string;
-    pollyLanguage?: string;
-    transcribeLanguage?: string;
-    keepContext?: boolean;
-    defaultSpeech?: string;
-    defaultQuestions?: string[];
+  openAiGptStreamerUrl: string;
+  awsPollyStreamerUrl: string;
+  awsTranscribeStreamerUrl: string;
+  pollyVoice?: string;
+  pollyLanguage?: string;
+  transcribeLanguage?: string;
+  keepContext?: boolean;
+  defaultSpeech?: string;
+  defaultQuestions?: string[];
 }
 
 function AiTalker({
-    openAiGptStreamerUrl,
-    awsPollyStreamerUrl,
-    awsTranscribeStreamerUrl,
-    pollyVoice = "Lucia",
-    pollyLanguage = "es-ES",
-    transcribeLanguage = "es-US",
-    keepContext = false,
-    defaultSpeech = "Hola!, mi nombre es Lucia. Soy tu nueva asistente virtual. ¿En qué puedo ayudarte hoy?",
-    defaultQuestions = [
-        "¿En qué puedo ayudarte hoy?",
-        "¿Qué puedo hacer por ti?",
-        "¿En qué te puedo ayudar?",
-        "¿Qué necesitas?",
-        "¿En qué puedo ayudarte?",
-    ],
+  openAiGptStreamerUrl,
+  awsPollyStreamerUrl,
+  awsTranscribeStreamerUrl,
+  pollyVoice = "Lucia",
+  pollyLanguage = "es-ES",
+  transcribeLanguage = "es-US",
+  keepContext = false,
+  defaultSpeech = "Hola!, mi nombre es Lucia. Soy tu nueva asistente virtual. ¿En qué puedo ayudarte hoy?",
+  defaultQuestions = [
+    "¿En qué puedo ayudarte hoy?",
+    "¿Qué puedo hacer por ti?",
+    "¿En qué te puedo ayudar?",
+    "¿Qué necesitas?",
+    "¿En qué puedo ayudarte?",
+  ],
 }: AiTalkerProps) {
-    const talkerRef = useRef<HTMLParagraphElement>(null);
-    const humanRef = useRef<HTMLParagraphElement>(null);
-    const upperCircle = useRef<HTMLDivElement>(null);
-    const middleCircle = useRef<HTMLDivElement>(null);
-    const lowerCircle = useRef<HTMLDivElement>(null);
+  const talkerRef = useRef<HTMLParagraphElement>(null);
+  const humanRef = useRef<HTMLParagraphElement>(null);
+  const upperCircle = useRef<HTMLDivElement>(null);
+  const middleCircle = useRef<HTMLDivElement>(null);
+  const lowerCircle = useRef<HTMLDivElement>(null);
 
-    var pollySettings = {
-        awsPollyStreamerUrl: awsPollyStreamerUrl,
-        pollyVoiceId: pollyVoice,
-        pollyLanguageCode: pollyLanguage,
-        cacheSpeech: false,
-    };
+  var pollySettings = {
+    awsPollyStreamerUrl: awsPollyStreamerUrl,
+    pollyVoiceId: pollyVoice,
+    pollyLanguageCode: pollyLanguage,
+    cacheSpeech: false,
+  };
 
-    var transcribeSettings = {
-        awsTranscribeStreamerUrl: awsTranscribeStreamerUrl,
-        language: transcribeLanguage,
-    };
+  var transcribeSettings = {
+    awsTranscribeStreamerUrl: awsTranscribeStreamerUrl,
+    language: transcribeLanguage,
+  };
 
-    const [openai] = useState<OpenAiGpt>(
-        new OpenAiGpt({
-            openAiGptStreamerUrl: openAiGptStreamerUrl,
-            preMessages: [
-                {
-                    role: "system",
-                    content: "Eres un asistente virtual. Tu nombre es Lucia.",
-                },
-            ],
-        })
-    );
+  const [openai] = useState<OpenAiGpt>(
+    new OpenAiGpt({
+      openAiGptStreamerUrl: openAiGptStreamerUrl,
+      preMessages: [
+        {
+          role: "system",
+          content: "Eres un asistente virtual. Tu nombre es Lucia.",
+        },
+      ],
+    })
+  );
 
-    const [polly] = useState<AwsPolly>(new AwsPolly(pollySettings));
+  const [polly] = useState<AwsPolly>(new AwsPolly(pollySettings));
 
-    const [transcribe] = useState<AwsTranscribe>(
-        new AwsTranscribe(transcribeSettings)
-    );
+  const [transcribe] = useState<AwsTranscribe>(
+    new AwsTranscribe(transcribeSettings)
+  );
 
-    const [isRecording, setIsRecording] = useState(false);
-    const [isStarted, setIsStarted] = useState(false);
-    const [chat, setChat] = useState<{ role: string; content: string }[]>([]);
-    const [firstTime, setFirstTime] = useState(true);
-    const [isFirstSpeak, setIsFirstSpeak] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
+  const [chat, setChat] = useState<{ role: string; content: string }[]>([]);
+  const [firstTime, setFirstTime] = useState(true);
+  const [isFirstSpeak, setIsFirstSpeak] = useState(false);
 
-    useEffect(() => {
-        if (isStarted) {
-            if (!isRecording) {
-                let speech = "";
+  useEffect(() => {
+    if (isStarted) {
+      if (!isRecording) {
+        let speech = "";
 
-                if (talkerRef.current) talkerRef.current.textContent = "";
+        if (talkerRef.current) talkerRef.current.textContent = "";
 
-                const onSpeakEnd = () => {
-                    setIsRecording(true);
-                    if (keepContext) {
-                        setChat((prev) => [
-                            ...prev,
-                            { role: "assistant", content: speech },
-                        ]);
-                    }
-                    updateSpeaker(0, true, false, true);
-                };
+        const onSpeakEnd = () => {
+          setIsRecording(true);
+          if (keepContext) {
+            setChat((prev) => [
+              ...prev,
+              { role: "assistant", content: speech },
+            ]);
+          }
+          updateSpeaker(0, true, false, true);
+        };
 
-                const { onStream, onStreamEnd } = polly.speakStream(onSpeakEnd);
+        const { onStream, onStreamEnd } = polly.speakStream(onSpeakEnd);
 
-                const callback = (text: string) => {
-                    if (talkerRef.current)
-                        talkerRef.current.textContent += text;
+        const callback = (text: string) => {
+          if (talkerRef.current) talkerRef.current.textContent += text;
 
-                    speech += text;
-                    onStream(text);
-                };
+          speech += text;
+          onStream(text);
+        };
 
-                const onFinish = () => {
-                    onStreamEnd();
-                };
+        const onFinish = () => {
+          onStreamEnd();
+        };
 
-                openai.callGpt(chat, callback, onFinish);
-            } else {
-                let transcription = "";
+        openai.callGpt(chat, callback, onFinish);
+      } else {
+        let transcription = "";
 
-                if (humanRef.current) humanRef.current.textContent = "";
+        if (humanRef.current) humanRef.current.textContent = "";
 
-                const onTranscriptionDataReceived = (data: string) => {
-                    if (humanRef.current) {
-                        humanRef.current.textContent += data;
-                    }
+        const onTranscriptionDataReceived = (data: string) => {
+          if (humanRef.current) {
+            humanRef.current.textContent += data;
+          }
 
-                    transcription += data;
-                };
+          transcription += data;
+        };
 
-                const onTimeout = (isAsleep: boolean) => {
-                    transcribe.stopRecording();
+        const onTimeout = (isAsleep: boolean) => {
+          transcribe.stopRecording();
 
-                    if (isAsleep) {
-                        setIsStarted(false);
-                        setChat([]);
-                        updateSpeaker(0, true, true);
-                    } else {
-                        setIsRecording(false);
-                        updateSpeaker(0, true);
-
-                        if (keepContext) {
-                            setChat((prev) => [
-                                ...prev,
-                                { role: "user", content: transcription },
-                            ]);
-                        } else {
-                            setChat([{ role: "user", content: transcription }]);
-                        }
-                    }
-                };
-
-                transcribe.startRecording(
-                    onTranscriptionDataReceived,
-                    onTimeout
-                );
-            }
-        }
-    }, [isStarted, isRecording, polly, transcribe, openai, chat, keepContext]);
-
-    const onPlaying = (freq: number) => {
-        updateSpeaker(freq, false);
-    };
-
-    const handleButtonClick = () => {
-        if (!isStarted && !isFirstSpeak) {
-            setIsFirstSpeak(true);
+          if (isAsleep) {
+            setIsStarted(false);
+            setChat([]);
+            updateSpeaker(0, true, true);
+          } else {
+            setIsRecording(false);
             updateSpeaker(0, true);
-            polly.setUpAnalyser(onPlaying);
-
-            const onSpeakEnd = () => {
-                setIsStarted(true);
-                setIsFirstSpeak(false);
-                setIsRecording(true);
-                setFirstTime(false);
-                updateSpeaker(0, true, false, true);
-            };
-
-            if (firstTime) {
-                polly.speak(defaultSpeech, false, onSpeakEnd);
-            } else {
-                polly.speak(
-                    defaultQuestions[
-                        Math.floor(Math.random() * defaultQuestions.length)
-                    ],
-                    false,
-                    onSpeakEnd
-                );
-            }
 
             if (keepContext) {
-                setChat([{ role: "assistant", content: defaultSpeech }]);
+              setChat((prev) => [
+                ...prev,
+                { role: "user", content: transcription },
+              ]);
+            } else {
+              setChat([{ role: "user", content: transcription }]);
             }
-        } else {
-            setIsStarted(false);
-            setIsFirstSpeak(false);
-            setIsRecording(true);
-            setChat([]);
-            openai.stopGpt();
-            polly.shutUp();
-            transcribe.stopRecording();
-            if (talkerRef.current) talkerRef.current.textContent = "";
-            if (humanRef.current) humanRef.current.textContent = "";
-            updateSpeaker(0, true, true);
-        }
-    };
-
-    function updateSpeaker(
-        acum: number,
-        easeTransition: boolean,
-        isDown: boolean = false,
-        isRecording: boolean = false
-    ) {
-        const refArray = [upperCircle, middleCircle, lowerCircle];
-        const sizes = [100, 80, 60];
-        const sizesBW = [70, 50, 30];
-        const colors = ["#9bdbf6", "#15a0e8", "white"];
-        const colorsBW = ["#c7c7c7", "#6d6d6d", "white"];
-
-        if (isRecording) {
-            sizes[0] = 80;
-            sizes[1] = 30;
-            sizes[2] = 0;
-            if (upperCircle.current) {
-                upperCircle.current.style.animation =
-                    "moveborders 5s infinite linear";
-            }
-        } else {
-            if (upperCircle.current) {
-                upperCircle.current.style.animation = "";
-            }
-        }
-
-        for (let i = 0; i < refArray.length; i++) {
-            const ref = refArray[i];
-
-            if (ref.current) {
-                ref.current.style.width = `${
-                    (isDown ? sizesBW[i] : sizes[i]) + acum
-                }px`;
-                ref.current.style.height = `${
-                    (isDown ? sizesBW[i] : sizes[i]) + acum
-                }px`;
-                ref.current.style.backgroundColor = isDown
-                    ? colorsBW[i]
-                    : colors[i];
-                if (easeTransition)
-                    ref.current.style.transition = isDown
-                        ? "ease width 0.6s, ease height 0.6s"
-                        : "ease width 0.2s, ease height 0.2s";
-                else ref.current.style.transition = "";
-            }
-        }
-    }
-
-    function getStyles(
-        size: number,
-        color: string,
-        cursorPointer: boolean = false
-    ) {
-        return {
-            width: `${size}px`,
-            height: `${size}px`,
-            backgroundColor: color,
-            borderRadius: "50%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: cursorPointer ? "pointer" : "default",
+          }
         };
+
+        transcribe.startRecording(onTranscriptionDataReceived, onTimeout);
+      }
+    }
+  }, [isStarted, isRecording, polly, transcribe, openai, chat, keepContext]);
+
+  const onPlaying = (freq: number) => {
+    updateSpeaker(freq, false);
+  };
+
+  const handleButtonClick = () => {
+    if (!isStarted && !isFirstSpeak) {
+      setIsFirstSpeak(true);
+      updateSpeaker(0, true);
+      polly.setUpAnalyser(onPlaying);
+
+      const onSpeakEnd = () => {
+        setIsStarted(true);
+        setIsFirstSpeak(false);
+        setIsRecording(true);
+        setFirstTime(false);
+        updateSpeaker(0, true, false, true);
+      };
+
+      if (firstTime) {
+        polly.speak(defaultSpeech, false, onSpeakEnd);
+      } else {
+        polly.speak(
+          defaultQuestions[Math.floor(Math.random() * defaultQuestions.length)],
+          false,
+          onSpeakEnd
+        );
+      }
+
+      if (keepContext) {
+        setChat([{ role: "assistant", content: defaultSpeech }]);
+      }
+    } else {
+      setIsStarted(false);
+      setIsFirstSpeak(false);
+      setIsRecording(true);
+      setChat([]);
+      openai.stopGpt();
+      polly.shutUp();
+      transcribe.stopRecording();
+      if (talkerRef.current) talkerRef.current.textContent = "";
+      if (humanRef.current) humanRef.current.textContent = "";
+      updateSpeaker(0, true, true);
+    }
+  };
+
+  function updateSpeaker(
+    acum: number,
+    easeTransition: boolean,
+    isDown: boolean = false,
+    isRecording: boolean = false
+  ) {
+    const refArray = [upperCircle, middleCircle, lowerCircle];
+    const sizes = [100, 80, 60];
+    const sizesBW = [70, 50, 30];
+    const colors = ["#9bdbf6", "#15a0e8", "white"];
+    const colorsBW = ["#c7c7c7", "#6d6d6d", "white"];
+
+    if (isRecording) {
+      sizes[0] = 80;
+      sizes[1] = 30;
+      sizes[2] = 0;
+      if (upperCircle.current) {
+        upperCircle.current.style.animation = "moveborders 5s infinite linear";
+      }
+    } else {
+      if (upperCircle.current) {
+        upperCircle.current.style.animation = "";
+      }
     }
 
-    return (
-        <div>
-            <div style={getStyles(300, "transparent")}>
-                <div
-                    ref={upperCircle}
-                    style={getStyles(70, "#c7c7c7", true)}
-                    onClick={() => handleButtonClick()}
-                >
-                    <div
-                        ref={middleCircle}
-                        style={getStyles(50, "#6d6d6d", true)}
-                    >
-                        <div
-                            ref={lowerCircle}
-                            style={getStyles(30, "white", true)}
-                        ></div>
-                    </div>
-                </div>
-            </div>
-            {/* <button onClick={handleButtonClick}>Start</button>
-            <button onClick={handleButtonClickStop}>stop</button> */}
-            {/* <p ref={talkerRef} />
-            <p ref={humanRef} /> */}
+    for (let i = 0; i < refArray.length; i++) {
+      const ref = refArray[i];
+
+      if (ref.current) {
+        ref.current.style.width = `${
+          (isDown ? sizesBW[i] : sizes[i]) + acum
+        }px`;
+        ref.current.style.height = `${
+          (isDown ? sizesBW[i] : sizes[i]) + acum
+        }px`;
+        ref.current.style.backgroundColor = isDown ? colorsBW[i] : colors[i];
+        if (easeTransition)
+          ref.current.style.transition = isDown
+            ? "ease width 0.6s, ease height 0.6s"
+            : "ease width 0.2s, ease height 0.2s";
+        else ref.current.style.transition = "";
+      }
+    }
+  }
+
+  function getStyles(
+    size: number,
+    color: string,
+    cursorPointer: boolean = false
+  ) {
+    return {
+      width: `${size}px`,
+      height: `${size}px`,
+      backgroundColor: color,
+      borderRadius: "50%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      cursor: cursorPointer ? "pointer" : "default",
+    };
+  }
+
+  return (
+    <div>
+      <div style={getStyles(300, "transparent")}>
+        <div
+          ref={upperCircle}
+          style={getStyles(70, "#c7c7c7", true)}
+          onClick={() => handleButtonClick()}
+        >
+          <div ref={middleCircle} style={getStyles(50, "#6d6d6d", true)}>
+            <div ref={lowerCircle} style={getStyles(30, "white", true)}></div>
+          </div>
         </div>
-    );
+      </div>
+      {/* <button onClick={handleButtonClick}>Start</button>
+            <button onClick={handleButtonClickStop}>stop</button> */}
+      {/* <p ref={talkerRef} />
+            <p ref={humanRef} /> */}
+    </div>
+  );
 }
 
 export default AiTalker;
