@@ -7,16 +7,13 @@ import AiTalker from "@/components/AiTalker";
 function AiAssistant() {
   return (
     <div>
-      <Container sx={{ paddingTop: "24px" }}>
-        <Typography
-          variant="h2"
-          sx={{ marginTop: "100px", textAlign: "center" }}
-        >
-          AI Assistant
-        </Typography>
-      </Container>
       <Container
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        sx={{
+          marginTop: "200px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <AiTalker
           openAiGptStreamerUrl={
