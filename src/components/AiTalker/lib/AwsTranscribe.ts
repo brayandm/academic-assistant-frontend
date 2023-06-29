@@ -23,7 +23,11 @@ class AwsTranscribe {
     this.microphoneStream.setStream(
       await window.navigator.mediaDevices.getUserMedia({
         video: false,
-        audio: true,
+        audio: {
+          sampleSize: 64,
+          channelCount: 1,
+          sampleRate: this.SAMPLE_RATE,
+        },
       })
     );
   }
