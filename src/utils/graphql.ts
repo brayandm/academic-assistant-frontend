@@ -7,3 +7,7 @@ export function getHeaders(session: Session, headers?: any) {
     Accept: "application/json",
   };
 }
+
+export function parseGraphqlError(error: any) {
+  return JSON.parse("{" + error.message.split("{").slice(1).join("{"));
+}

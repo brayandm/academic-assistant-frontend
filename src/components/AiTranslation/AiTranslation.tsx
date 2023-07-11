@@ -14,6 +14,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { useGetTranslationResultQuery } from "@/graphql/hooks";
 import { useSession } from "next-auth/react";
 import { GraphqlRequestClientContext } from "@/providers/GraphqlRequestClientProvider";
+import { parseGraphqlError } from "@/utils/graphql";
 
 export default function AiTranslation() {
   const [originalLanguage, setOriginalLanguage] = React.useState("English");
@@ -23,6 +24,7 @@ export default function AiTranslation() {
   const [taskId, setTaskId] = React.useState("");
   const graphqlRequestClient = useContext(GraphqlRequestClientContext);
   const [showError, setShowError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
   const [newRequest, setNewRequest] = React.useState(false);
 
   const { data: session } = useSession();
@@ -50,9 +52,9 @@ export default function AiTranslation() {
     };
   }, [refetch, taskId, newRequest]);
 
-  async function handleTranslate() {
-    const taskId = (
-      await graphqlRequestClient.createTranslationTask(
+  function handleTranslate() {
+    graphqlRequestClient
+      .createTranslationTask(
         {
           original_language: originalLanguage,
           target_language: targetLanguage,
@@ -63,17 +65,26 @@ export default function AiTranslation() {
           Authorization: `Bearer ${session?.user.access_token}`,
         }
       )
-    ).createTranslationTask?.task_id;
+      .then((res) => {
+        const taskId = res.createTranslationTask?.task_id;
 
-    if (taskId) {
-      setTaskId(taskId);
-      setNewRequest(true);
-    }
+        if (taskId) {
+          setTaskId(taskId);
+          setNewRequest(true);
+        }
+      })
+      .catch((err) => {
+        setShowError(true);
+        setErrorMessage(
+          parseGraphqlError(err).response.errors[0].extensions.reason
+        );
+      });
   }
 
   if (newRequest && data && data?.getTranslationResult?.status != "PENDING") {
     if (data?.getTranslationResult?.status == "FAILED") {
       setShowError(true);
+      setErrorMessage("There was an error translating the text");
     }
     setNewRequest(false);
   }
@@ -191,7 +202,7 @@ export default function AiTranslation() {
           severity="error"
           sx={{ width: "100%" }}
         >
-          There was an error translating the text
+          {errorMessage}
         </Alert>
       </Snackbar>
     </>
