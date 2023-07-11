@@ -14,7 +14,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { useGetTranslationResultQuery } from "@/graphql/hooks";
 import { useSession } from "next-auth/react";
 import { GraphqlRequestClientContext } from "@/providers/GraphqlRequestClientProvider";
-import { parseGraphqlError } from "@/utils/graphql";
+import { getGraphqlError } from "@/utils/graphql";
 
 export default function AiTranslation() {
   const [originalLanguage, setOriginalLanguage] = React.useState("English");
@@ -76,8 +76,7 @@ export default function AiTranslation() {
       .catch((err) => {
         setShowError(true);
 
-        const error =
-          parseGraphqlError(err).response.errors[0].extensions.reason;
+        const error = getGraphqlError(err);
 
         setErrorMessage(
           error ? error : "There was an error translating the text"
