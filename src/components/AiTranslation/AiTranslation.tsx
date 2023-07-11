@@ -75,8 +75,12 @@ export default function AiTranslation() {
       })
       .catch((err) => {
         setShowError(true);
+
+        const error =
+          parseGraphqlError(err).response.errors[0].extensions.reason;
+
         setErrorMessage(
-          parseGraphqlError(err).response.errors[0].extensions.reason
+          error ? error : "There was an error translating the text"
         );
       });
   }
