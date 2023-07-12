@@ -58,6 +58,7 @@ function AiTalker({
 
   const [openai] = useState<OpenAiGpt>(
     new OpenAiGpt({
+      userToken: userToken,
       openAiGptStreamerUrl: openAiGptStreamerUrl,
       preMessages: [
         {

@@ -1,4 +1,5 @@
 type OpenAiGptSettings = {
+  userToken: string;
   openAiGptStreamerUrl: string;
   preMessages?: { role: string; content: string }[];
 };
@@ -37,6 +38,14 @@ class OpenAiGpt {
     ws.onerror = console.error;
 
     ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          setup: {
+            token: this.settings.userToken,
+          },
+        })
+      );
+
       ws.send(
         JSON.stringify(
           this.settings.preMessages
