@@ -7,6 +7,7 @@ import OpenAiGpt from "./lib/OpenAiGpt";
 import "./styles.css";
 
 interface AiTalkerProps {
+  userToken: string;
   openAiGptStreamerUrl: string;
   awsPollyStreamerUrl: string;
   awsTranscribeStreamerUrl: string;
@@ -19,6 +20,7 @@ interface AiTalkerProps {
 }
 
 function AiTalker({
+  userToken,
   openAiGptStreamerUrl,
   awsPollyStreamerUrl,
   awsTranscribeStreamerUrl,
@@ -42,6 +44,7 @@ function AiTalker({
   const lowerCircle = useRef<HTMLDivElement>(null);
 
   var pollySettings = {
+    userToken: userToken,
     awsPollyStreamerUrl: awsPollyStreamerUrl,
     pollyVoiceId: pollyVoice,
     pollyLanguageCode: pollyLanguage,

@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
-import { Typography, Container } from "@mui/material";
+import { Container } from "@mui/material";
 import AiTalker from "@/components/AiTalker";
+import { useSession } from "next-auth/react";
 
 function AiAssistant() {
+  const { data: session } = useSession();
+
   return (
     <div>
       <Container
@@ -16,6 +19,7 @@ function AiAssistant() {
         }}
       >
         <AiTalker
+          userToken={session?.user.access_token || ""}
           openAiGptStreamerUrl={
             process.env.NEXT_PUBLIC_OPENAI_GPT_STREAMER_URL || ""
           }

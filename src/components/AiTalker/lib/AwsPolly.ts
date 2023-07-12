@@ -1,4 +1,5 @@
 type AwsPollySettings = {
+  userToken: string;
   awsPollyStreamerUrl: string;
   pollyLanguageCode: string;
   pollyVoiceId: string;
@@ -254,6 +255,14 @@ class AwsPolly {
       ws.onerror = errorCallback;
 
       ws.onopen = () => {
+        ws.send(
+          JSON.stringify({
+            setup: {
+              token: this.settings.userToken,
+            },
+          })
+        );
+
         ws.send(
           JSON.stringify({
             text: text,
