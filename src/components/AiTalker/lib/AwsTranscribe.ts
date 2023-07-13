@@ -9,8 +9,6 @@ type AwsTranscribeSettings = {
 
 class AwsTranscribe {
   SAMPLE_RATE = 48000;
-  TIME_OUT = 1000;
-  TIME_TO_SLEEP = 5000;
   microphoneStream: MicrophoneStream | undefined;
   settings: AwsTranscribeSettings;
   timeoutId: NodeJS.Timeout | undefined;
