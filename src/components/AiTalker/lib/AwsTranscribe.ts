@@ -25,7 +25,7 @@ class AwsTranscribe {
       await window.navigator.mediaDevices.getUserMedia({
         video: false,
         audio: {
-          sampleSize: 64,
+          sampleSize: 16,
           channelCount: 1,
           sampleRate: this.SAMPLE_RATE,
         },
