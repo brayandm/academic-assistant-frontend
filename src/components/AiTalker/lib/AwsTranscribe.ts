@@ -8,7 +8,7 @@ type AwsTranscribeSettings = {
 };
 
 class AwsTranscribe {
-  SAMPLE_RATE = 44100;
+  SAMPLE_RATE = 48000;
   TIME_OUT = 1000;
   TIME_TO_SLEEP = 5000;
   microphoneStream: MicrophoneStream | undefined;
