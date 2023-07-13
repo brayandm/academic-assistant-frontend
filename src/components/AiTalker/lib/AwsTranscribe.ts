@@ -2,6 +2,7 @@ import MicrophoneStream from "microphone-stream";
 import { Buffer } from "buffer";
 
 type AwsTranscribeSettings = {
+  userToken: string;
   awsTranscribeStreamerUrl: string;
   language: string;
 };
@@ -69,6 +70,7 @@ class AwsTranscribe {
       ws.send(
         JSON.stringify({
           setup: {
+            token: this.settings.userToken,
             language: language,
           },
         })

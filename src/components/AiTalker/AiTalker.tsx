@@ -52,6 +52,7 @@ function AiTalker({
   };
 
   var transcribeSettings = {
+    userToken: userToken,
     awsTranscribeStreamerUrl: awsTranscribeStreamerUrl,
     language: transcribeLanguage,
   };
